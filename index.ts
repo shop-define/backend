@@ -14,6 +14,19 @@ declare module 'fastify' {
   }
 }
 
+export class BackendError extends Error {
+  statusCode: number;
+  constructor(message: string | Record<any, any>, statusCode = 500) {
+    if(typeof message === 'string') {
+      super(message);
+    } else {
+      super(JSON.stringify(message));
+    }
+    this.name = 'BackendError';
+    this.statusCode = statusCode;
+  }
+}
+
 const app = Fastify({
   logger: {
     level: 'info',
@@ -37,8 +50,30 @@ app.addHook('preHandler', (request: FastifyRequest, _, next) => {
   return next();
 });
 
+app.addHook('onSend', (request, reply, payload, done) => {
+  if (!request.url.startsWith(config.app.swaggerPath)) {
+    const err = null;
+    const newPayload = JSON.stringify({status: 'ok', data: payload ?? null})
+    done(err, newPayload)
+  } else {
+    done(null, payload);
+  }
+})
+
 // swagger
-app.register(import('@fastify/swagger'));
+app.register(import('@fastify/swagger'), {
+  openapi: {
+    info: {
+      title: 'Shop define backend',
+      version: '1.0.0'
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000', // Замените на ваш адрес
+      },
+    ],
+  },
+});
 app.register(import('@fastify/swagger-ui'), {
   routePrefix: config.app.swaggerPath,
   uiConfig: {
@@ -53,7 +88,24 @@ app.register(import('@fastify/swagger-ui'), {
 });
 
 app.setErrorHandler(async (err, _, reply) => {
-  reply.code(500).send({ message: 'Internal server error', err: err });
+  console.log(err.message)
+  if (err instanceof BackendError) {
+    reply.code(err.statusCode).send({
+      status: 'error',
+      data: {
+        message: err.message,
+      }
+    });
+  } else {
+    // Обработка других типов ошибок
+    reply.code(500).send({
+      status: 'error',
+      data: {
+        message: 'Internal Server Error',
+        err: err,
+      }
+    });
+  }
 });
 
 // api routes
