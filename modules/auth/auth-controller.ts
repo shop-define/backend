@@ -25,7 +25,7 @@ export async function refreshAccessToken(req: FastifyRequest, reply: FastifyRepl
     const decoded = await decodeToken(req.jwt, refreshToken);
     const newAccessToken = await generatedAccessToken(req.jwt, decoded.id, decoded.email);
 
-    reply.send({ accessToken: newAccessToken });
+    reply.sendWithStatus(200,{ accessToken: newAccessToken })
   } catch (err) {
     throw new BackendError('Invalid refresh token', 401);
   }
@@ -44,7 +44,7 @@ export async function loginEmail(req: FastifyRequest<{ Body: ILoginBody }>, repl
     throw new BackendError(e as Object, 400);
   }
 
-  reply.code(200).send('ok');
+  reply.sendWithStatus(200, 'ok');
 }
 
 export async function loginEmailValidateCode(
@@ -80,12 +80,11 @@ export async function loginEmailValidateCode(
       sameSite: 'strict',
       maxAge: 604800, // 7 days
     })
-    .code(200)
-    .send({
+    .sendWithStatus(200, {
       accessToken: accessToken,
       profile: {
         id: account?.id,
         email: account?.email,
-      },
-    });
+      }
+    })
 }

@@ -1,60 +1,44 @@
-import { FastifySchema } from 'fastify';
+import { Type } from '@sinclair/typebox';
+import {ErrorSchema, ResponseWithStatus, UserSchema} from "../../../libs/schemas/common-schema";
 
-export const ILoginConfirmBodySchema: FastifySchema = {
-  body: {
-    title: 'ILoginConfirmBody',
-    type: 'object',
-    properties: {
-      email: { type: 'string' },
-      code: { type: 'string' },
-    },
-    required: ['email', 'code'],
-  },
+const RefreshTokenSchema = {
+  tags: ['Auth'],
+  cookies: Type.Object({
+    refreshToken: Type.String(),
+  }),
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        profile: {
-          type: 'object',
-          properties: {
-            id: { type: 'number' },
-            email: { type: 'string' },
-          },
-        },
-        accessToken: {
-          type: 'string',
-        },
-      },
-    },
+    200: ResponseWithStatus(Type.Object({
+      accessToken: Type.String(),
+    }, {title: 'IRefreshTokenResponse'})),
+    401: ErrorSchema,
   },
 };
 
-export const ILoginBodySchema: FastifySchema = {
-  body: {
-    title: 'ILoginBody',
-    type: 'object',
-    properties: {
-      email: { type: 'string' },
-    },
-    required: ['email'],
-  },
+const ILoginBodySchema = {
+  tags: ['Auth'],
+  body: Type.Object({
+    email: Type.String({ format: 'email' }),
+  }, { required: ['email'], title: 'ILoginBody' }),
   response: {
-    200: {
-      type: 'string',
-      enum: ["ok"]
-    },
+    200: ResponseWithStatus(Type.Null()),
+    400: ErrorSchema,
   },
 };
 
-export const RefreshTokenSchema: FastifySchema = {
+const ILoginConfirmBodySchema = {
+  tags: ['Auth'],
+  body: Type.Object({
+    code: Type.String(),
+    email: Type.String({ format: 'email' }),
+  }, { required: ['code', 'email'], title: 'ILoginConfirmBody' }),
   response: {
-    200: {
-      type: 'object',
-      properties: {
-        accessToken: {
-          type: 'string',
-        },
-      },
-    },
+    200: ResponseWithStatus(Type.Object({
+      accessToken: Type.String(),
+      profile: UserSchema,
+    }, {title: 'ILoginConfirmResponse'})),
+    400: ErrorSchema,
+    409: ErrorSchema,
   },
 };
+
+export { RefreshTokenSchema, ILoginBodySchema, ILoginConfirmBodySchema };

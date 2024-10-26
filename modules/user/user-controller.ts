@@ -9,5 +9,5 @@ export async function getUser(req: FastifyRequest, reply: FastifyReply) {
     throw new BackendError('User not found', 404);
   }
 
-  reply.send({ profile });
+  reply.sendWithStatus(200, { profile });
 }

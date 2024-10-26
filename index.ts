@@ -12,6 +12,10 @@ declare module 'fastify' {
   interface FastifyRequest {
     jwt: JWT;
   }
+
+  interface FastifyReply {
+    sendWithStatus(statusCode: number, payload?: any): void;
+  }
 }
 
 export class BackendError extends Error {
@@ -45,20 +49,19 @@ app.decorate('authenticate', async function (request: FastifyRequest, reply: Fas
     return reply.code(401).send({ message: 'Unauthorized' });
   }
 });
+app.decorateReply('sendWithStatus', function (this: any, statusCode: number, payload: any) {
+  this.code(statusCode).send({
+    status: [200, 201].includes(statusCode) ? 'ok' : 'error',
+    data: {
+      ...payload,
+    }
+  });
+});
+
 app.addHook('preHandler', (request: FastifyRequest, _, next) => {
   request.jwt = app.jwt;
   return next();
 });
-
-app.addHook('onSend', (request, reply, payload, done) => {
-  if (!request.url.startsWith(config.app.swaggerPath)) {
-    const err = null;
-    const newPayload = JSON.stringify({status: 'ok', data: payload ?? null})
-    done(err, newPayload)
-  } else {
-    done(null, payload);
-  }
-})
 
 // swagger
 app.register(import('@fastify/swagger'), {
@@ -67,11 +70,15 @@ app.register(import('@fastify/swagger'), {
       title: 'Shop define backend',
       version: '1.0.0'
     },
-    servers: [
-      {
-        url: 'http://localhost:3000', // Замените на ваш адрес
-      },
-    ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
   },
 });
 app.register(import('@fastify/swagger-ui'), {
