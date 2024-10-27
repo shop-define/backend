@@ -12,6 +12,23 @@ declare module 'fastify' {
   interface FastifyRequest {
     jwt: JWT;
   }
+
+  interface FastifyReply {
+    sendWithStatus(statusCode: number, payload?: any): void;
+  }
+}
+
+export class BackendError extends Error {
+  statusCode: number;
+  constructor(message: string | Record<any, any>, statusCode = 500) {
+    if(typeof message === 'string') {
+      super(message);
+    } else {
+      super(JSON.stringify(message));
+    }
+    this.name = 'BackendError';
+    this.statusCode = statusCode;
+  }
 }
 
 const app = Fastify({
@@ -32,13 +49,38 @@ app.decorate('authenticate', async function (request: FastifyRequest, reply: Fas
     return reply.code(401).send({ message: 'Unauthorized' });
   }
 });
+app.decorateReply('sendWithStatus', function (this: any, statusCode: number, payload: any) {
+  this.code(statusCode).send({
+    status: [200, 201].includes(statusCode) ? 'ok' : 'error',
+    data: {
+      ...payload,
+    }
+  });
+});
+
 app.addHook('preHandler', (request: FastifyRequest, _, next) => {
   request.jwt = app.jwt;
   return next();
 });
 
 // swagger
-app.register(import('@fastify/swagger'));
+app.register(import('@fastify/swagger'), {
+  openapi: {
+    info: {
+      title: 'Shop define backend',
+      version: '1.0.0'
+    },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+  },
+});
 app.register(import('@fastify/swagger-ui'), {
   routePrefix: config.app.swaggerPath,
   uiConfig: {
@@ -53,7 +95,24 @@ app.register(import('@fastify/swagger-ui'), {
 });
 
 app.setErrorHandler(async (err, _, reply) => {
-  reply.code(500).send({ message: 'Internal server error', err: err });
+  console.log(err.message)
+  if (err instanceof BackendError) {
+    reply.code(err.statusCode).send({
+      status: 'error',
+      data: {
+        message: err.message,
+      }
+    });
+  } else {
+    // Обработка других типов ошибок
+    reply.code(500).send({
+      status: 'error',
+      data: {
+        message: 'Internal Server Error',
+        err: err,
+      }
+    });
+  }
 });
 
 // api routes

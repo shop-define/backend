@@ -1,19 +1,13 @@
+import { Type } from '@sinclair/typebox';
 import { FastifySchema } from 'fastify';
+import {ResponseWithStatus, UserSchema} from '../../../libs/schemas/common-schema';
 
 export const ProfileSchema: FastifySchema = {
+  security: [{ BearerAuth: [] }],
   response: {
-    200: {
-      title: 'ProfileResponse',
-      type: 'object',
-      properties: {
-        profile: {
-          type: 'object',
-          properties: {
-            id: { type: 'number' },
-            email: { type: 'string' },
-          },
-        }
-      },
-    },
+    200: ResponseWithStatus(
+         Type.Object({
+          profile: UserSchema,
+        })),
   },
 };

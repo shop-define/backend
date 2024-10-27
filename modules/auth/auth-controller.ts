@@ -3,6 +3,7 @@ import { decodeToken, generatedAccessToken, generatedRefreshToken } from '../../
 import { deleteEmailCode, getEmailCode, saveEmailCode } from './db/email-codes';
 import { sendEmailCode } from '../../libs/mailer/send-mail';
 import { createAccount } from '../user/db/user';
+import {BackendError} from "../../index";
 
 import { config } from '../../config';
 
@@ -18,16 +19,15 @@ interface ILoginConfirmBody {
 export async function refreshAccessToken(req: FastifyRequest, reply: FastifyReply) {
   const { refreshToken } = req.cookies;
 
-  if (!refreshToken) return reply.code(401).send({ message: 'Refresh token not found' });
+  if (!refreshToken) throw new BackendError('Refresh token not found', 401);
 
   try {
     const decoded = await decodeToken(req.jwt, refreshToken);
     const newAccessToken = await generatedAccessToken(req.jwt, decoded.id, decoded.email);
 
-    reply.send({ accessToken: newAccessToken });
+    reply.sendWithStatus(200,{ accessToken: newAccessToken })
   } catch (err) {
-    console.log(err);
-    reply.code(401).send({ message: 'Invalid refresh token' });
+    throw new BackendError('Invalid refresh token', 401);
   }
 }
 
@@ -41,11 +41,10 @@ export async function loginEmail(req: FastifyRequest<{ Body: ILoginBody }>, repl
       sendEmailCode(email, generatedCode);
     }
   } catch (e) {
-    console.log(e);
-    return reply.code(400).send({ message: JSON.stringify(e) });
+    throw new BackendError(e as Object, 400);
   }
 
-  reply.code(200).send('ok');
+  reply.sendWithStatus(200, 'ok');
 }
 
 export async function loginEmailValidateCode(
@@ -56,18 +55,18 @@ export async function loginEmailValidateCode(
 
   const emailCode = await getEmailCode(email);
   if (!emailCode) {
-    return reply.code(400).send({ message: 'Code not found' });
+    throw new BackendError('Code not found', 400);
   }
 
   if (emailCode !== Number(code)) {
-    return reply.code(400).send({ message: 'Code not match' });
+    throw new BackendError('Code not match', 400);
   }
 
   const account = await createAccount({ email });
   await deleteEmailCode(email);
 
   if (!account) {
-    return reply.code(409).send();
+    throw new BackendError('User not created', 409);
   }
 
   const accessToken = await generatedAccessToken(req.jwt, account.id, account.email);
@@ -81,12 +80,11 @@ export async function loginEmailValidateCode(
       sameSite: 'strict',
       maxAge: 604800, // 7 days
     })
-    .code(200)
-    .send({
+    .sendWithStatus(200, {
       accessToken: accessToken,
       profile: {
         id: account?.id,
         email: account?.email,
-      },
-    });
+      }
+    })
 }
