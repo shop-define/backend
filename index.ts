@@ -127,7 +127,7 @@ app.get('/healthcheck', (_, res) => {
 });
 
 async function main() {
-  app.listen({ port: +config.app.port }, (err, address) => {
+  app.listen({ port: +config.app.port, host: '0.0.0.0' }, (err, address) => {
     if (err) {
       console.error(err);
       process.exit(1);
