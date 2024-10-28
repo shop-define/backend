@@ -3,7 +3,7 @@ import { decodeToken, generatedAccessToken, generatedRefreshToken } from '../../
 import { deleteEmailCode, getEmailCode, saveEmailCode } from './db/email-codes';
 import { sendEmailCode } from '../../libs/mailer/send-mail';
 import { createAccount } from '../user/db/user';
-import {BackendError} from "../../index";
+import { BackendError } from '../../index';
 
 import { config } from '../../config';
 
@@ -25,8 +25,8 @@ export async function refreshAccessToken(req: FastifyRequest, reply: FastifyRepl
     const decoded = await decodeToken(req.jwt, refreshToken);
     const newAccessToken = await generatedAccessToken(req.jwt, decoded.id, decoded.email);
 
-    reply.sendWithStatus(200,{ accessToken: newAccessToken })
-  } catch (err) {
+    reply.sendWithStatus(200, { accessToken: newAccessToken });
+  } catch {
     throw new BackendError('Invalid refresh token', 401);
   }
 }
@@ -41,16 +41,13 @@ export async function loginEmail(req: FastifyRequest<{ Body: ILoginBody }>, repl
       sendEmailCode(email, generatedCode);
     }
   } catch (e) {
-    throw new BackendError(e as Object, 400);
+    throw new BackendError(e as Error, 400);
   }
 
   reply.sendWithStatus(200, 'ok');
 }
 
-export async function loginEmailValidateCode(
-  req: FastifyRequest<{ Body: ILoginConfirmBody }>,
-  reply: FastifyReply
-) {
+export async function loginEmailValidateCode(req: FastifyRequest<{ Body: ILoginConfirmBody }>, reply: FastifyReply) {
   const { email, code } = req.body;
 
   const emailCode = await getEmailCode(email);
@@ -85,6 +82,6 @@ export async function loginEmailValidateCode(
       profile: {
         id: account?.id,
         email: account?.email,
-      }
-    })
+      },
+    });
 }
