@@ -122,6 +122,9 @@ app.register(import('./modules/user/user-routes'), {
 app.register(import('./modules/auth/auth-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/category/category-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });

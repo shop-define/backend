@@ -22,3 +22,12 @@ model EmailCode {
   code      Int
   createdAt DateTime @default(now())
 }
+
+model GoodCategory {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  parentId    Int?
+  parent      GoodCategory?  @relation("GoodCategory", fields: [parentId], references: [id])
+  children    GoodCategory[] @relation("GoodCategory")
+}

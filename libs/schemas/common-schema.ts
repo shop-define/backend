@@ -14,4 +14,11 @@ export const ErrorSchema = ResponseWithStatus(Type.Object({
 export const UserSchema = Type.Object({
   id: Type.String(),
   email: Type.String(),
-}, {title: 'UserResponse'})
+}, {title: 'User'})
+
+export const GoodCategorySchema = Type.Object({
+  id: Type.Integer(),
+  title: Type.String(),
+  description: Type.String(),
+  parentId: Type.Optional(Type.Integer()),
+}, {title: 'GoodCategory'})
