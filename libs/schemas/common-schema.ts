@@ -10,6 +10,17 @@ export const ResponseWithStatus = (dataType: TSchema) => {
   );
 };
 
+export const ResponseWithPagination = (dataType: TSchema) => {
+  return Type.Object(
+    {
+      status: Type.Union([Type.Literal('ok'), Type.Literal('error')]),
+      data: dataType,
+      total: Type.Integer(),
+    },
+    { title: 'ResponseWithPagination' }
+  );
+};
+
 export const ErrorSchema = ResponseWithStatus(
   Type.Object({
     message: Type.String(),

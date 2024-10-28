@@ -14,14 +14,15 @@ declare module 'fastify' {
   }
 
   interface FastifyReply {
-    sendWithStatus(statusCode: number, payload?: any): void;
+    sendWithStatus(statusCode: number, payload?: string | object): void;
+    sendWithPagination(statusCode: number, payload?: string | object, total?: number): void;
   }
 }
 
 export class BackendError extends Error {
   statusCode: number;
-  constructor(message: string | Record<any, any>, statusCode = 500) {
-    if(typeof message === 'string') {
+  constructor(message: string | object, statusCode = 500) {
+    if (typeof message === 'string') {
       super(message);
     } else {
       super(JSON.stringify(message));
@@ -49,14 +50,22 @@ app.decorate('authenticate', async function (request: FastifyRequest, reply: Fas
     return reply.code(401).send({ message: 'Unauthorized' });
   }
 });
-app.decorateReply('sendWithStatus', function (this: any, statusCode: number, payload: any) {
+app.decorateReply('sendWithStatus', function (this: FastifyReply, statusCode: number, payload: string | object) {
   this.code(statusCode).send({
     status: [200, 201].includes(statusCode) ? 'ok' : 'error',
-    data: {
-      ...payload,
-    }
+    data: payload,
   });
 });
+app.decorateReply(
+  'sendWithPagination',
+  function (this: FastifyReply, statusCode: number, payload: string | object, total: undefined | number = 0) {
+    this.code(statusCode).send({
+      status: [200, 201].includes(statusCode) ? 'ok' : 'error',
+      data: payload,
+      total,
+    });
+  }
+);
 
 app.addHook('preHandler', (request: FastifyRequest, _, next) => {
   request.jwt = app.jwt;
@@ -68,16 +77,16 @@ app.register(import('@fastify/swagger'), {
   openapi: {
     info: {
       title: 'Shop define backend',
-      version: '1.0.0'
+      version: '1.0.0',
     },
     components: {
       securitySchemes: {
         BearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
-      }
+          bearerFormat: 'JWT',
+        },
+      },
     },
   },
 });
@@ -95,13 +104,13 @@ app.register(import('@fastify/swagger-ui'), {
 });
 
 app.setErrorHandler(async (err, _, reply) => {
-  console.log(err.message)
+  console.log(err.message);
   if (err instanceof BackendError) {
     reply.code(err.statusCode).send({
       status: 'error',
       data: {
         message: err.message,
-      }
+      },
     });
   } else {
     // Обработка других типов ошибок
@@ -110,7 +119,7 @@ app.setErrorHandler(async (err, _, reply) => {
       data: {
         message: 'Internal Server Error',
         err: err,
-      }
+      },
     });
   }
 });
