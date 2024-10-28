@@ -11,7 +11,7 @@ export const GetCategorySchema: FastifySchema = {
   tags: ['Good-categories'],
   response: {
     200: ResponseWithStatus(GoodCategorySchema),
-    404: ResponseWithStatus(ErrorSchema),
+    404: ErrorSchema,
   },
   params: Type.Object({
     id: Type.Integer(),
@@ -26,6 +26,6 @@ export const GetCategoriesListSchema: FastifySchema = {
   }),
   response: {
     200: ResponseWithPagination(Type.Array(GoodCategorySchema)),
-    404: ResponseWithStatus(ErrorSchema),
+    404: ErrorSchema,
   },
 };
