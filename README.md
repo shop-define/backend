@@ -1,4 +1,5 @@
 ## Command for PrismaORM
+
 ```sh
 ## prisma-studio
 npx prisma studio
@@ -24,5 +25,5 @@ docker-compose up --build
 ### Миграция БД
 
 ```sh
-docker-compose exec backend-define npx prisma migrate dev --name init 
+docker-compose exec backend-define npx prisma migrate dev --name init
 ```
