@@ -21,6 +21,14 @@ export const ResponseWithPagination = (dataType: TSchema) => {
   );
 };
 
+export const UserRoleSchema = Type.Array(
+  Type.Enum({
+    seller: 'seller',
+    customer: 'customer',
+    admin: 'admin',
+  })
+);
+
 export const ErrorSchema = ResponseWithStatus(
   Type.Object({
     message: Type.String(),
@@ -31,6 +39,7 @@ export const UserSchema = Type.Object(
   {
     id: Type.String(),
     email: Type.String(),
+    roles: UserRoleSchema,
   },
   { title: 'User' }
 );
@@ -40,7 +49,7 @@ export const GoodCategorySchema = Type.Object(
     id: Type.Integer(),
     title: Type.String(),
     description: Type.String(),
-    parentId: Type.Optional(Type.Union([Type.Null(), Type.Integer()], { default: null })),
+    parentId: Type.Optional(Type.Union([Type.Null(), Type.Number()], { default: null })),
   },
   { title: 'GoodCategory' }
 );

@@ -30,9 +30,14 @@ export async function getCategoriesList(
   reply.sendWithPagination(200, categoriesList, categoriesTotal);
 }
 
-export async function postCategory(req: FastifyRequest, reply: FastifyReply) {
-  // eslint-disable-next-line
-  const category = await createCategory(req.body as any);
+interface ICreateCategoryBody {
+  title: string;
+  description: string;
+  parentId: number | null;
+}
+
+export async function postCategory(req: FastifyRequest<{ Body: ICreateCategoryBody }>, reply: FastifyReply) {
+  const category = await createCategory(req.body);
 
   if (!category) {
     throw new BackendError('Permission denied', 403);

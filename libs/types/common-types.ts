@@ -1,7 +1,7 @@
-export type UserRole = 'customer' | 'admin';
+export type UserRole = 'customer' | 'seller' | 'admin';
 
 export type TokenPayload = {
-  id: string | number;
-  email: string;
-  role: UserRole;
+  id: number;
+  email: string | null;
+  roles: UserRole[];
 };

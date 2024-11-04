@@ -1,8 +1,12 @@
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('seller', 'customer', 'admin');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "roles" "UserRole"[] DEFAULT ARRAY['customer']::"UserRole"[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
