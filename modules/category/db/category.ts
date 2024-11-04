@@ -25,16 +25,29 @@ export async function getTotalCategories() {
   return categories;
 }
 
-export async function createCategory({
-  title,
-  description,
-  parentId,
-}: {
+type CategoryBody = {
   title: string;
   description: string;
   parentId: number | null;
-}) {
+};
+
+export async function createCategory({ title, description, parentId }: CategoryBody) {
   const category = await prismaClient.goodCategory.create({
+    data: {
+      title,
+      description,
+      parentId,
+    },
+  });
+
+  return category;
+}
+
+export async function updateCategory(id: number, { title, description, parentId }: Partial<CategoryBody>) {
+  const category = await prismaClient.goodCategory.update({
+    where: {
+      id,
+    },
     data: {
       title,
       description,

@@ -10,10 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  seller
+  customer
+  admin
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String?  @unique
   createdAt DateTime @default(now())
+  roles     UserRole[] @default([customer])
 }
 
 model EmailCode {

@@ -29,3 +29,28 @@ export const GetCategoriesListSchema: FastifySchema = {
     404: ErrorSchema,
   },
 };
+
+export const CreateCategorySchema: FastifySchema = {
+  tags: ['Good-categories'],
+  security: [{ BearerAuth: [] }],
+  body: Type.Omit(GoodCategorySchema, ['id']),
+  response: {
+    200: ResponseWithStatus(GoodCategorySchema),
+    403: ErrorSchema,
+    409: ErrorSchema,
+  },
+};
+
+export const UpdateCategorySchema: FastifySchema = {
+  tags: ['Good-categories'],
+  security: [{ BearerAuth: [] }],
+  params: Type.Object({
+    id: Type.Integer(),
+  }),
+  body: Type.Partial(Type.Omit(GoodCategorySchema, ['id'])),
+  response: {
+    200: ResponseWithStatus(GoodCategorySchema),
+    403: ErrorSchema,
+    409: ErrorSchema,
+  },
+};

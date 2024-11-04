@@ -4,10 +4,13 @@ import fastifyCookie from '@fastify/cookie';
 
 import { disconnectDatabase } from './libs/db/connect';
 import { config } from './config';
+import { TokenPayload, UserRole } from './libs/types/common-types';
 
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    // eslint-disable-next-line
+    validateRole: (targetRoles: UserRole[]) => (request: any) => Promise<void>;
   }
   interface FastifyRequest {
     jwt: JWT;
@@ -41,15 +44,33 @@ const app = Fastify({
 // authentication
 app.register(fastifyJWT, { secret: config.jwt.secret });
 app.register(fastifyCookie);
-app.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
+app.decorate('authenticate', async function (request: FastifyRequest) {
   try {
     // Authorization: Bearer <token>
     await request.jwtVerify();
   } catch (err) {
-    console.error(err);
-    return reply.code(401).send({ message: 'Unauthorized' });
+    throw new BackendError('Unauthorized', 401);
   }
 });
+app.decorate(
+  'validateRole',
+  (targetRoles: UserRole[]) =>
+    async function (request: FastifyRequest) {
+      let roles: UserRole[] = [];
+      try {
+        // Authorization: Bearer <token>
+        roles = (await request.jwtVerify<TokenPayload>()).roles;
+      } catch (err) {
+        throw new BackendError('Unauthorized', 401);
+      }
+
+      const isAccess = roles.some((role) => targetRoles.includes(role));
+      if (!isAccess) {
+        throw new BackendError('Permission denied', 403);
+      }
+    }
+);
+
 app.decorateReply('sendWithStatus', function (this: FastifyReply, statusCode: number, payload: string | object) {
   this.code(statusCode).send({
     status: [200, 201].includes(statusCode) ? 'ok' : 'error',

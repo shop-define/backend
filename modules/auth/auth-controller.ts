@@ -23,7 +23,7 @@ export async function refreshAccessToken(req: FastifyRequest, reply: FastifyRepl
 
   try {
     const decoded = await decodeToken(req.jwt, refreshToken);
-    const newAccessToken = await generatedAccessToken(req.jwt, decoded.id, decoded.email);
+    const newAccessToken = await generatedAccessToken(req.jwt, decoded);
 
     reply.sendWithStatus(200, { accessToken: newAccessToken });
   } catch {
@@ -66,8 +66,13 @@ export async function loginEmailValidateCode(req: FastifyRequest<{ Body: ILoginC
     throw new BackendError('User not created', 409);
   }
 
-  const accessToken = await generatedAccessToken(req.jwt, account.id, account.email);
-  const refreshToken = await generatedRefreshToken(req.jwt, account.id, account.email);
+  const tokenPayload = {
+    id: account.id,
+    email: account.email,
+    roles: account.roles,
+  };
+  const accessToken = await generatedAccessToken(req.jwt, tokenPayload);
+  const refreshToken = await generatedRefreshToken(req.jwt, tokenPayload);
 
   reply
     .setCookie('refreshToken', refreshToken, {
@@ -82,6 +87,7 @@ export async function loginEmailValidateCode(req: FastifyRequest<{ Body: ILoginC
       profile: {
         id: account?.id,
         email: account?.email,
+        roles: account?.roles,
       },
     });
 }
