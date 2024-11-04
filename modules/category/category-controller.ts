@@ -1,8 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { createCategory, getCategories, getCategoryById, getTotalCategories } from './db/category';
+import { createCategory, getCategories, getCategoryById, getTotalCategories, updateCategory } from './db/category';
 import { BackendError } from '../../index';
 
-export async function getCategory(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+export async function getCategory(req: FastifyRequest<{ Params: { id: number } }>, reply: FastifyReply) {
   const categoryId = req.params.id;
 
   const category = await getCategoryById(Number(categoryId));
@@ -40,11 +40,20 @@ export async function postCategory(req: FastifyRequest<{ Body: ICreateCategoryBo
   const category = await createCategory(req.body);
 
   if (!category) {
-    throw new BackendError('Permission denied', 403);
+    throw new BackendError('Category not created', 409);
   }
 
+  reply.sendWithStatus(200, category);
+}
+
+export async function patchCategory(
+  req: FastifyRequest<{ Params: { id: number }; Body: Partial<ICreateCategoryBody> }>,
+  reply: FastifyReply
+) {
+  const category = await updateCategory(req.params.id, req.body);
+
   if (!category) {
-    throw new BackendError('Category not created', 409);
+    throw new BackendError('Category not updated', 409);
   }
 
   reply.sendWithStatus(200, category);

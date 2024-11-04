@@ -40,3 +40,17 @@ export const CreateCategorySchema: FastifySchema = {
     409: ErrorSchema,
   },
 };
+
+export const UpdateCategorySchema: FastifySchema = {
+  tags: ['Good-categories'],
+  security: [{ BearerAuth: [] }],
+  params: Type.Object({
+    id: Type.Integer(),
+  }),
+  body: Type.Partial(Type.Omit(GoodCategorySchema, ['id'])),
+  response: {
+    200: ResponseWithStatus(GoodCategorySchema),
+    403: ErrorSchema,
+    409: ErrorSchema,
+  },
+};

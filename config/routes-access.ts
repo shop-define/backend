@@ -5,5 +5,8 @@ export const routesAccess = {
     create: {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
+    update: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
   },
 };

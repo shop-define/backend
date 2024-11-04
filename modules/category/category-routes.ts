@@ -1,6 +1,11 @@
 import { FastifyInstance } from 'fastify';
-import { getCategory, getCategoriesList, postCategory } from './category-controller';
-import { CreateCategorySchema, GetCategoriesListSchema, GetCategorySchema } from './schemas/category-schema';
+import { getCategory, getCategoriesList, postCategory, patchCategory } from './category-controller';
+import {
+  CreateCategorySchema,
+  GetCategoriesListSchema,
+  GetCategorySchema,
+  UpdateCategorySchema,
+} from './schemas/category-schema';
 import { routesAccess } from '../../config/routes-access';
 
 async function routes(app: FastifyInstance) {
@@ -16,6 +21,14 @@ async function routes(app: FastifyInstance) {
           schema: CreateCategorySchema,
         },
         postCategory
+      );
+      goodCategoriesRoutes.patch(
+        '/:id',
+        {
+          preHandler: [app.validateRole(routesAccess.goodCategories.update.accessGroups)],
+          schema: UpdateCategorySchema,
+        },
+        patchCategory
       );
     },
     { prefix }
