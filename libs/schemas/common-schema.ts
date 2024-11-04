@@ -40,7 +40,7 @@ export const GoodCategorySchema = Type.Object(
     id: Type.Integer(),
     title: Type.String(),
     description: Type.String(),
-    parentId: Type.Optional(Type.Union([Type.Integer(), Type.Null()])),
+    parentId: Type.Optional(Type.Union([Type.Null(), Type.Integer()], { default: null })),
   },
   { title: 'GoodCategory' }
 );
