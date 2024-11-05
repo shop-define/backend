@@ -1,7 +1,8 @@
 import { FastifyInstance } from 'fastify';
-import { getCategory, getCategoriesList, postCategory, patchCategory } from './category-controller';
+import { getCategory, getCategoriesList, postCategory, patchCategory, deleteCategory } from './category-controller';
 import {
   CreateCategorySchema,
+  DeleteCategorySchema,
   GetCategoriesListSchema,
   GetCategorySchema,
   UpdateCategorySchema,
@@ -29,6 +30,14 @@ async function routes(app: FastifyInstance) {
           schema: UpdateCategorySchema,
         },
         patchCategory
+      );
+      goodCategoriesRoutes.delete(
+        '/:id',
+        {
+          preHandler: [app.validateRole(routesAccess.goodCategories.delete.accessGroups)],
+          schema: DeleteCategorySchema,
+        },
+        deleteCategory
       );
     },
     { prefix }
