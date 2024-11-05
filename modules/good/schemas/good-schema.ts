@@ -54,3 +54,16 @@ export const UpdateGoodSchema: FastifySchema = {
     409: ErrorSchema,
   },
 };
+
+export const DeleteGoodSchema: FastifySchema = {
+  tags: ['Good'],
+  security: [{ BearerAuth: [] }],
+  params: Type.Object({
+    id: GoodSchema.properties.id,
+  }),
+  response: {
+    200: ResponseWithStatus(GoodSchema),
+    403: ErrorSchema,
+    409: ErrorSchema,
+  },
+};

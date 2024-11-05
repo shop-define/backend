@@ -54,13 +54,23 @@ export const GoodCategorySchema = Type.Object(
   { title: 'GoodCategory' }
 );
 
-export const GoodSchema = Type.Object(
+export const BrandSchema = Type.Object(
   {
     id: Type.String(),
     name: Type.String(),
     description: Type.String(),
+  },
+  { title: 'GoodCategory' }
+);
+
+export const GoodSchema = Type.Object(
+  {
+    id: Type.String(),
+    title: Type.String(),
+    description: Type.String(),
     price: Type.Number(),
-    categoryId: GoodCategorySchema.properties.id,
+    categoryId: Type.Optional(Type.Union([Type.Null(), GoodCategorySchema.properties.id], { default: null })),
+    brandId: Type.Optional(Type.Union([Type.Null(), BrandSchema.properties.id], { default: null })),
   },
   { title: 'Good' }
 );
