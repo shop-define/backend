@@ -57,3 +57,13 @@ export async function updateCategory(id: number, { title, description, parentId 
 
   return category;
 }
+
+export async function deleteCategoryById(id: number) {
+  const category = await prismaClient.goodCategory.delete({
+    where: {
+      id,
+    },
+  });
+
+  return category;
+}

@@ -1,5 +1,12 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { createCategory, getCategories, getCategoryById, getTotalCategories, updateCategory } from './db/category';
+import {
+  createCategory,
+  deleteCategoryById,
+  getCategories,
+  getCategoryById,
+  getTotalCategories,
+  updateCategory,
+} from './db/category';
 import { BackendError } from '../../index';
 
 export async function getCategory(req: FastifyRequest<{ Params: { id: number } }>, reply: FastifyReply) {
@@ -54,6 +61,16 @@ export async function patchCategory(
 
   if (!category) {
     throw new BackendError('Category not updated', 409);
+  }
+
+  reply.sendWithStatus(200, category);
+}
+
+export async function deleteCategory(req: FastifyRequest<{ Params: { id: number } }>, reply: FastifyReply) {
+  const category = await deleteCategoryById(req.params.id);
+
+  if (!category) {
+    throw new BackendError('Category not deleted', 409);
   }
 
   reply.sendWithStatus(200, category);

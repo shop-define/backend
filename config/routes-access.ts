@@ -8,5 +8,8 @@ export const routesAccess = {
     update: {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
+    delete: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
   },
 };
