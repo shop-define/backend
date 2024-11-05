@@ -17,10 +17,12 @@ enum UserRole {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String?    @unique
-  createdAt DateTime   @default(now())
-  roles     UserRole[] @default([customer])
+  id           Int            @id @default(autoincrement())
+  email        String?        @unique
+  createdAt    DateTime       @default(now())
+  roles        UserRole[]     @default([customer])
+  BasketItem   BasketItem[]
+  FavoriteItem FavoriteItem[]
 }
 
 model EmailCode {
@@ -38,14 +40,46 @@ model GoodCategory {
   parent      GoodCategory?  @relation("GoodCategory", fields: [parentId], references: [id])
   children    GoodCategory[] @relation("GoodCategory")
   Good        Good[]
+  createdAt   DateTime       @default(now())
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  goods       Good[]
+  createdAt   DateTime @default(now())
 }
 
 model Good {
-  id          String       @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  categoryId  Int
-  category    GoodCategory @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime     @default(now())
+  id           String         @id @default(cuid())
+  name         String
+  description  String
+  price        Float
+  categoryId   Int?
+  category     GoodCategory?  @relation(fields: [categoryId], references: [id])
+  brandId      String?
+  brand        Brand?         @relation(fields: [brandId], references: [id])
+  BasketItem   BasketItem[]
+  FavoriteItem FavoriteItem[]
+  createdAt    DateTime       @default(now())
+}
+
+model BasketItem {
+  id        String   @id @default(cuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goodId    String
+  good      Good     @relation(fields: [goodId], references: [id], onDelete: Cascade)
+  count     Int
+  createdAt DateTime @default(now())
+}
+
+model FavoriteItem {
+  id        String   @id @default(cuid())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goodId    String
+  good      Good     @relation(fields: [goodId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
