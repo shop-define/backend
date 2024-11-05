@@ -1,0 +1,20 @@
+name: Generate Changelog
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  generate_changelog:
+    runs-on: alpine-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.6
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install auto-changelog
+        run: npm install -g auto-changelog
+      - name: Generate Changelog
+        run: auto-changelog -o CHANGELOG.md --commit-limit false --unreleased --sort-commits date-desc --template ./keepachangelog.hbs

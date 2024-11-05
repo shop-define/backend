@@ -1,0 +1,17 @@
+# Changelog
+
+{{#each releases}}
+    {{#commit-list
+            commits
+            heading='## Изменения'}}
+        ### {{subject}}
+        - **Дата:** {{niceDate}}
+        - **Хэш коммита:** [`{{shorthash}}`]({{href}})
+        - **Автор:** {{author}}
+        - **Изменения:** +{{insertions}} : -{{deletions}}
+        ```
+        * {{message}}
+        ```
+    {{/commit-list}}
+{{/each}}
+
