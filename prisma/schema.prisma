@@ -17,9 +17,9 @@ enum UserRole {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String?  @unique
-  createdAt DateTime @default(now())
+  id        Int        @id @default(autoincrement())
+  email     String?    @unique
+  createdAt DateTime   @default(now())
   roles     UserRole[] @default([customer])
 }
 
@@ -37,4 +37,15 @@ model GoodCategory {
   parentId    Int?
   parent      GoodCategory?  @relation("GoodCategory", fields: [parentId], references: [id])
   children    GoodCategory[] @relation("GoodCategory")
+  Good        Good[]
+}
+
+model Good {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  categoryId  Int
+  category    GoodCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime     @default(now())
 }

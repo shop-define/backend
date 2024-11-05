@@ -155,6 +155,9 @@ app.register(import('./modules/auth/auth-routes'), {
 app.register(import('./modules/category/category-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/good/good-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });

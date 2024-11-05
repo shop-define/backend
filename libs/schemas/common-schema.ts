@@ -53,3 +53,14 @@ export const GoodCategorySchema = Type.Object(
   },
   { title: 'GoodCategory' }
 );
+
+export const GoodSchema = Type.Object(
+  {
+    id: Type.String(),
+    name: Type.String(),
+    description: Type.String(),
+    price: Type.Number(),
+    categoryId: GoodCategorySchema.properties.id,
+  },
+  { title: 'Good' }
+);
