@@ -55,7 +55,8 @@ model Good {
   id           String         @id @default(cuid())
   title        String
   description  String
-  price        Float
+  price        Float          @default(0)
+  count        Int            @default(0)
   categoryId   Int?
   category     GoodCategory?  @relation(fields: [categoryId], references: [id])
   brandId      String?
