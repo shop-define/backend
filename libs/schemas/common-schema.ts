@@ -82,3 +82,11 @@ export const FavoriteSchema = Type.Object(
   },
   { title: 'Favorite' }
 );
+
+export const BasketSchema = Type.Object(
+  {
+    goodId: GoodSchema.properties.id,
+    count: Type.Integer(),
+  },
+  { title: 'Basket' }
+);
