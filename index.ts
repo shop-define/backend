@@ -8,16 +8,18 @@ import { TokenPayload, UserRole } from './libs/types/common-types';
 
 declare module 'fastify' {
   interface FastifyInstance {
-    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    // eslint-disable-next-line
+    authenticate: (request: any, reply: any) => Promise<void>;
     // eslint-disable-next-line
     validateRole: (targetRoles: UserRole[]) => (request: any) => Promise<void>;
   }
   interface FastifyRequest {
     jwt: JWT;
+    userId?: number;
   }
 
   interface FastifyReply {
-    sendWithStatus(statusCode: number, payload?: string | object): void;
+    sendWithStatus(statusCode: number, payload?: string | object | boolean): void;
     sendWithPagination(statusCode: number, payload?: string | object, total?: number): void;
   }
 }
@@ -47,7 +49,7 @@ app.register(fastifyCookie);
 app.decorate('authenticate', async function (request: FastifyRequest) {
   try {
     // Authorization: Bearer <token>
-    await request.jwtVerify();
+    request.userId = (await request.jwtVerify<TokenPayload>()).id;
   } catch (err) {
     throw new BackendError('Unauthorized', 401);
   }
@@ -156,6 +158,9 @@ app.register(import('./modules/category/category-routes'), {
   prefix: config.app.apiPrefix,
 });
 app.register(import('./modules/good/good-routes'), {
+  prefix: config.app.apiPrefix,
+});
+app.register(import('./modules/favorite/favorite-routes'), {
   prefix: config.app.apiPrefix,
 });
 app.get('/healthcheck', (_, res) => {

@@ -83,6 +83,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "EmailCode_email_key" ON "EmailCode"("email");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "BasketItem_userId_goodId_key" ON "BasketItem"("userId", "goodId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "FavoriteItem_userId_goodId_key" ON "FavoriteItem"("userId", "goodId");
+
 -- AddForeignKey
 ALTER TABLE "GoodCategory" ADD CONSTRAINT "GoodCategory_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "GoodCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
