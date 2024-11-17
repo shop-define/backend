@@ -74,6 +74,8 @@ model BasketItem {
   good      Good     @relation(fields: [goodId], references: [id], onDelete: Cascade)
   count     Int
   createdAt DateTime @default(now())
+
+  @@unique([userId, goodId])
 }
 
 model FavoriteItem {
@@ -83,4 +85,6 @@ model FavoriteItem {
   goodId    String
   good      Good     @relation(fields: [goodId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+
+  @@unique([userId, goodId])
 }

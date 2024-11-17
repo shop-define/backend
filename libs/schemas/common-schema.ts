@@ -75,3 +75,10 @@ export const GoodSchema = Type.Object(
   },
   { title: 'Good' }
 );
+
+export const FavoriteSchema = Type.Object(
+  {
+    goodId: GoodSchema.properties.id,
+  },
+  { title: 'Favorite' }
+);
