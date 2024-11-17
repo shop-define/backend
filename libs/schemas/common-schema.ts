@@ -60,7 +60,7 @@ export const BrandSchema = Type.Object(
     name: Type.String(),
     description: Type.String(),
   },
-  { title: 'GoodCategory' }
+  { title: 'Brand' }
 );
 
 export const GoodSchema = Type.Object(

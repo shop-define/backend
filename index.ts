@@ -166,6 +166,9 @@ app.register(import('./modules/favorite/favorite-routes'), {
 app.register(import('./modules/basket/basket-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/brand/brand-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });
