@@ -4,6 +4,7 @@ export const config = {
     port: process.env.PORT || 3000,
     apiPrefix: process.env.API_PREFIX || '/api',
     swaggerPath: process.env.SWAGGER_PATH || '/api/docs',
+    originUrls: process.env.ORIGIN_URLS || '*',
   },
   dev: {
     authCode: process.env.DEV_AUTH_CODE || '12345',

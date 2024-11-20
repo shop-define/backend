@@ -44,6 +44,10 @@ const app = Fastify({
   },
 });
 
+app.register(import('@fastify/cors'), {
+  origin: config.app.originUrls,
+});
+
 // authentication
 app.register(fastifyJWT, { secret: config.jwt.secret });
 app.register(fastifyCookie);
