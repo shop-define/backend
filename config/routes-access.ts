@@ -34,4 +34,12 @@ export const routesAccess = {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
   },
+  images: {
+    create: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
+    delete: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
+  },
 };

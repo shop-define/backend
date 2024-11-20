@@ -3,6 +3,7 @@ import fastifyJWT, { JWT } from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 
 import { disconnectDatabase } from './libs/db/connect';
+import { setupBucket } from './libs/storage';
 import { config } from './config';
 import { TokenPayload, UserRole } from './libs/types/common-types';
 
@@ -126,6 +127,10 @@ app.register(import('@fastify/swagger-ui'), {
   transformSpecificationClone: true,
 });
 
+app.register(import('@fastify/multipart'), {
+  attachFieldsToBody: true,
+});
+
 app.setErrorHandler(async (err, _, reply) => {
   console.log(err.message);
   if (err instanceof BackendError) {
@@ -169,6 +174,9 @@ app.register(import('./modules/basket/basket-routes'), {
 app.register(import('./modules/brand/brand-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/images/images-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });
@@ -181,6 +189,7 @@ async function main() {
     }
     console.log(`Server listening at ${address}`);
   });
+  setupBucket();
 }
 
 // shutdown
