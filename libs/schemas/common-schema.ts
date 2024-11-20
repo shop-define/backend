@@ -90,3 +90,10 @@ export const BasketSchema = Type.Object(
   },
   { title: 'Basket' }
 );
+
+export const ImageSchema = Type.Object(
+  {
+    name: Type.String(),
+  },
+  { title: 'Image' }
+);

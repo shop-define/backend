@@ -126,6 +126,10 @@ app.register(import('@fastify/swagger-ui'), {
   transformSpecificationClone: true,
 });
 
+app.register(import('@fastify/multipart'), {
+  attachFieldsToBody: true,
+});
+
 app.setErrorHandler(async (err, _, reply) => {
   console.log(err.message);
   if (err instanceof BackendError) {
@@ -167,6 +171,9 @@ app.register(import('./modules/basket/basket-routes'), {
   prefix: config.app.apiPrefix,
 });
 app.register(import('./modules/brand/brand-routes'), {
+  prefix: config.app.apiPrefix,
+});
+app.register(import('./modules/images/images-routes'), {
   prefix: config.app.apiPrefix,
 });
 app.get('/healthcheck', (_, res) => {
