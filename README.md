@@ -19,7 +19,7 @@ docker-compose up -d
 ### Пересборка
 
 ```sh
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 ### Миграция БД
@@ -27,3 +27,13 @@ docker-compose up --build
 ```sh
 docker-compose exec backend-define npx prisma migrate dev --name init
 ```
+
+### Запуск визуала для бд
+
+```sh
+docker-compose exec backend-define npm run prisma:studio
+```
+
+### Картинки
+
+Базово доступны по адресу `http://localhost:9000/shop-define-bucket/название_картинки`
