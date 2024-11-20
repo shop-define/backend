@@ -3,6 +3,7 @@ import fastifyJWT, { JWT } from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 
 import { disconnectDatabase } from './libs/db/connect';
+import { setupBucket } from './libs/storage';
 import { config } from './config';
 import { TokenPayload, UserRole } from './libs/types/common-types';
 
@@ -188,6 +189,7 @@ async function main() {
     }
     console.log(`Server listening at ${address}`);
   });
+  setupBucket();
 }
 
 // shutdown

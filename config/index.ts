@@ -6,7 +6,7 @@ export const config = {
     swaggerPath: process.env.SWAGGER_PATH || '/api/docs',
   },
   dev: {
-    authCode: process.env.DEV_AUTH_CODE || '123456',
+    authCode: process.env.DEV_AUTH_CODE || '12345',
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'default_jwt_secret',
@@ -19,5 +19,12 @@ export const config = {
   },
   database: {
     url: process.env.DATABASE_URL || '',
+  },
+  awsStorage: {
+    url: process.env.S3_ENDPOINT || '',
+    accessKey: process.env.S3_ACCESS_KEY || '',
+    secretKey: process.env.S3_SECRET_KEY || '',
+    region: process.env.S3_REGION || '',
+    bucketName: process.env.S3_BUCKET_NAME || '',
   },
 };
