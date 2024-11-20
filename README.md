@@ -34,6 +34,12 @@ docker-compose exec backend-define npx prisma migrate dev --name init
 docker-compose exec backend-define npm run prisma:studio
 ```
 
+### Запуск окружения
+
+```sh
+docker-compose up postgres-db minio -d
+```
+
 ### Картинки
 
 Базово доступны по адресу `http://localhost:9000/shop-define-bucket/название_картинки`
