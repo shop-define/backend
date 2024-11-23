@@ -40,6 +40,7 @@ export async function getCategoriesList(
 interface ICreateCategoryBody {
   title: string;
   description: string;
+  image?: string;
   parentId: number | null;
 }
 

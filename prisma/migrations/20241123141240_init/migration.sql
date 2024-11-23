@@ -26,6 +26,7 @@ CREATE TABLE "GoodCategory" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "image" TEXT,
     "parentId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -37,6 +38,7 @@ CREATE TABLE "Brand" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
+    "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Brand_pkey" PRIMARY KEY ("id")
@@ -49,6 +51,7 @@ CREATE TABLE "Good" (
     "description" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "count" INTEGER NOT NULL DEFAULT 0,
+    "images" TEXT[],
     "categoryId" INTEGER,
     "brandId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -35,6 +35,7 @@ interface ICreateGoodBody {
   description: string;
   price: number;
   count: number;
+  images: string[];
   categoryId: number | null;
   brandId: string | null;
 }

@@ -36,6 +36,7 @@ model GoodCategory {
   id          Int            @id @default(autoincrement())
   title       String
   description String
+  image       String?
   parentId    Int?
   parent      GoodCategory?  @relation("GoodCategory", fields: [parentId], references: [id])
   children    GoodCategory[] @relation("GoodCategory")
@@ -47,6 +48,7 @@ model Brand {
   id          String   @id @default(cuid())
   name        String
   description String?
+  image       String?
   goods       Good[]
   createdAt   DateTime @default(now())
 }
@@ -57,6 +59,7 @@ model Good {
   description  String
   price        Float          @default(0)
   count        Int            @default(0)
+  images       String[]
   categoryId   Int?
   category     GoodCategory?  @relation(fields: [categoryId], references: [id])
   brandId      String?
