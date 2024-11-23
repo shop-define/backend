@@ -22,6 +22,7 @@ export async function getTotalBrands() {
 type BrandBody = {
   title: string;
   name: string;
+  image?: string;
   description: string;
 };
 

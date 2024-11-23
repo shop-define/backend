@@ -49,6 +49,7 @@ export const GoodCategorySchema = Type.Object(
     id: Type.Integer(),
     title: Type.String(),
     description: Type.String(),
+    image: Type.String(),
     parentId: Type.Optional(Type.Union([Type.Null(), Type.Number()], { default: null })),
   },
   { title: 'GoodCategory' }
@@ -58,6 +59,7 @@ export const BrandSchema = Type.Object(
   {
     id: Type.String(),
     name: Type.String(),
+    image: Type.String(),
     description: Type.String(),
   },
   { title: 'Brand' }
@@ -70,6 +72,7 @@ export const GoodSchema = Type.Object(
     description: Type.String(),
     price: Type.Number({ minimum: 0 }),
     count: Type.Integer({ minimum: 0 }),
+    images: Type.Array(Type.String()),
     categoryId: Type.Optional(Type.Union([Type.Null(), GoodCategorySchema.properties.id], { default: null })),
     brandId: Type.Optional(Type.Union([Type.Null(), BrandSchema.properties.id], { default: null })),
   },

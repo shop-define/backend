@@ -33,6 +33,7 @@ export async function getBrandsList(
 interface ICreateBrandBody {
   title: string;
   name: string;
+  image?: string;
   description: string;
 }
 
