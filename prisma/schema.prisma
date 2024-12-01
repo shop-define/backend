@@ -91,3 +91,19 @@ model FavoriteItem {
 
   @@unique([userId, goodId])
 }
+
+model DeliveryMethod {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  createdAt   DateTime @default(now())
+}
+
+model PaymentMethod {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  createdAt   DateTime @default(now())
+}

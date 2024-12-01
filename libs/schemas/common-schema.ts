@@ -100,3 +100,13 @@ export const ImageSchema = Type.Object(
   },
   { title: 'Image' }
 );
+
+export const DeliveryMethodSchema = Type.Object(
+  {
+    id: Type.String(),
+    title: Type.String(),
+    description: Type.String(),
+    image: Type.String(),
+  },
+  { title: 'DeliveryMethod' }
+);

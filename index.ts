@@ -181,6 +181,9 @@ app.register(import('./modules/brand/brand-routes'), {
 app.register(import('./modules/images/images-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/delivery-methods/delivery-methods-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });
