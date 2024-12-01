@@ -110,3 +110,13 @@ export const DeliveryMethodSchema = Type.Object(
   },
   { title: 'DeliveryMethod' }
 );
+
+export const PaymentMethodSchema = Type.Object(
+  {
+    id: Type.String(),
+    title: Type.String(),
+    description: Type.String(),
+    image: Type.String(),
+  },
+  { title: 'DeliveryMethod' }
+);
