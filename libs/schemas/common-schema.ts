@@ -120,3 +120,16 @@ export const PaymentMethodSchema = Type.Object(
   },
   { title: 'DeliveryMethod' }
 );
+
+export const TransactionSchema = Type.Object(
+  {
+    id: Type.String(),
+    createdAt: Type.String(),
+    updatedAt: Type.String(),
+    status: Type.Enum({ pending: 'pending', success: 'success', error: 'error' }),
+    price: Type.Number({ minimum: 0 }),
+    checkoutId: Type.String(),
+    providerData: Type.String(),
+  },
+  { title: 'Transaction' }
+);
