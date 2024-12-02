@@ -64,4 +64,12 @@ export const routesAccess = {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
   },
+  transaction: {
+    get: {
+      accessGroups: ['admin'] as UserRole[],
+    },
+    update: {
+      accessGroups: ['admin'] as UserRole[],
+    },
+  },
 };

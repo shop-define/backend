@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('seller', 'customer', 'admin');
 
+-- CreateEnum
+CREATE TYPE "TransactionStatus" AS ENUM ('pending', 'success', 'error');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -102,6 +105,27 @@ CREATE TABLE "PaymentMethod" (
     CONSTRAINT "PaymentMethod_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Checkout" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Checkout_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Transaction" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "status" "TransactionStatus" NOT NULL DEFAULT 'pending',
+    "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "checkoutId" TEXT NOT NULL,
+    "providerData" TEXT NOT NULL,
+
+    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -134,3 +158,6 @@ ALTER TABLE "FavoriteItem" ADD CONSTRAINT "FavoriteItem_userId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "FavoriteItem" ADD CONSTRAINT "FavoriteItem_goodId_fkey" FOREIGN KEY ("goodId") REFERENCES "Good"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_checkoutId_fkey" FOREIGN KEY ("checkoutId") REFERENCES "Checkout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
