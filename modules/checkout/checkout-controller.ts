@@ -46,7 +46,7 @@ interface ICreateCheckoutBody {
 }
 
 export async function postCheckout(req: FastifyRequest<{ Body: ICreateCheckoutBody }>, reply: FastifyReply) {
-  if (req.body.goodsIdList.length !== req.body.goodsCount.length) {
+  if (req.body.goodsIdList.length !== req.body.goodsCount.length || req.body.goodsIdList.length <= 0) {
     throw new BackendError('Goods count not correct', 400);
   }
 
