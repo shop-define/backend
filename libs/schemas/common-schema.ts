@@ -75,6 +75,8 @@ export const GoodSchema = Type.Object(
     images: Type.Array(Type.String()),
     categoryId: Type.Optional(Type.Union([Type.Null(), GoodCategorySchema.properties.id], { default: null })),
     brandId: Type.Optional(Type.Union([Type.Null(), BrandSchema.properties.id], { default: null })),
+    modifiedName: Type.String(),
+    articleNumber: Type.String(),
   },
   { title: 'Good' }
 );

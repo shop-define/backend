@@ -1,8 +1,9 @@
 import { FastifyInstance } from 'fastify';
-import { deleteGood, getGood, getGoodsList, patchGood, postGood } from './good-controller';
+import { deleteGood, getGood, getGoodGroup, getGoodsList, patchGood, postGood } from './good-controller';
 import {
   CreateGoodSchema,
   DeleteGoodSchema,
+  GetGoodGroup,
   GetGoodSchema,
   GetGoodsListSchema,
   UpdateGoodSchema,
@@ -14,6 +15,7 @@ async function routes(app: FastifyInstance) {
   app.register(
     async (goodRoutes) => {
       goodRoutes.get('/:id', { schema: GetGoodSchema }, getGood);
+      goodRoutes.get('/:id/group', { schema: GetGoodGroup }, getGoodGroup);
       goodRoutes.get('/', { schema: GetGoodsListSchema }, getGoodsList);
       goodRoutes.post(
         '/',

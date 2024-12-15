@@ -54,19 +54,21 @@ model Brand {
 }
 
 model Good {
-  id           String         @id @default(cuid())
-  title        String
-  description  String
-  price        Float          @default(0)
-  count        Int            @default(0)
-  images       String[]
-  categoryId   Int?
-  category     GoodCategory?  @relation(fields: [categoryId], references: [id])
-  brandId      String?
-  brand        Brand?         @relation(fields: [brandId], references: [id])
-  BasketItem   BasketItem[]
-  FavoriteItem FavoriteItem[]
-  createdAt    DateTime       @default(now())
+  id            String         @id @default(cuid())
+  articleNumber String?
+  modifiedName  String?
+  title         String
+  description   String
+  price         Float          @default(0)
+  count         Int            @default(0)
+  images        String[]
+  categoryId    Int?
+  category      GoodCategory?  @relation(fields: [categoryId], references: [id])
+  brandId       String?
+  brand         Brand?         @relation(fields: [brandId], references: [id])
+  BasketItem    BasketItem[]
+  FavoriteItem  FavoriteItem[]
+  createdAt     DateTime       @default(now())
 }
 
 model BasketItem {

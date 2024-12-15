@@ -10,6 +10,14 @@ export async function getGoodById(id: string) {
   return good;
 }
 
+export async function getGoodsByGroup(group: string) {
+  return await prismaClient.good.findMany({
+    where: {
+      articleNumber: group,
+    },
+  });
+}
+
 export async function getGoods(offset: number, limit: number) {
   const categories = await prismaClient.good.findMany({
     skip: offset,
@@ -33,6 +41,8 @@ type GoodBody = {
   images: string[];
   categoryId: number | null;
   brandId: string | null;
+  articleNumber: string | null;
+  modifiedName: string | null;
 };
 
 export async function createGood(payload: GoodBody) {
