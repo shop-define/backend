@@ -135,3 +135,38 @@ export const TransactionSchema = Type.Object(
   },
   { title: 'Transaction' }
 );
+
+export const CheckoutSchema = Type.Object(
+  {
+    id: Type.String(),
+    userId: Type.Number(),
+
+    paymentMethodId: Type.String(),
+    paymentMethodName: Type.String(),
+
+    deliveryMethodId: Type.String(),
+    deliveryMethodName: Type.String(),
+
+    recipientName: Type.String(),
+    recipientAddress: Type.String(),
+    recipientPhone: Type.String(),
+
+    goodsIdList: Type.Array(Type.String()),
+    goodsPrice: Type.Array(Type.Number({ minimum: 0 })),
+
+    goodsCount: Type.Array(Type.Number({ minimum: 1 })),
+    goodsName: Type.Array(Type.String()),
+
+    paymentTotal: Type.Number({ minimum: 0 }),
+
+    status: Type.Enum({
+      created: 'created',
+      payed: 'payed',
+      delivery: 'delivery',
+      delivered: 'delivered',
+      success: 'success',
+      canceled: 'canceled',
+    }),
+  },
+  { title: 'Checkout' }
+);

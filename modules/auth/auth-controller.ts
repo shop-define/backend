@@ -79,7 +79,7 @@ export async function loginEmailValidateCode(req: FastifyRequest<{ Body: ILoginC
       httpOnly: true,
       secure: false,
       path: '/',
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 604800, // 7 days
     })
     .sendWithStatus(200, {

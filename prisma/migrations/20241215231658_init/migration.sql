@@ -2,6 +2,9 @@
 CREATE TYPE "UserRole" AS ENUM ('seller', 'customer', 'admin');
 
 -- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('created', 'payed', 'delivery', 'delivered', 'success', 'canceled');
+
+-- CreateEnum
 CREATE TYPE "TransactionStatus" AS ENUM ('pending', 'success', 'error');
 
 -- CreateTable
@@ -110,6 +113,21 @@ CREATE TABLE "PaymentMethod" (
 -- CreateTable
 CREATE TABLE "Checkout" (
     "id" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "paymentMethodId" TEXT,
+    "paymentMethodName" TEXT,
+    "deliveryMethodId" TEXT NOT NULL,
+    "deliveryMethodName" TEXT NOT NULL,
+    "recipientName" TEXT NOT NULL,
+    "recipientAddress" TEXT NOT NULL,
+    "recipientPhone" TEXT NOT NULL,
+    "goodsIdList" TEXT[],
+    "goodsPrice" DOUBLE PRECISION[],
+    "goodsCount" INTEGER[],
+    "goodsName" TEXT[],
+    "paymentTotal" DOUBLE PRECISION NOT NULL,
+    "status" "OrderStatus" NOT NULL DEFAULT 'created',
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Checkout_pkey" PRIMARY KEY ("id")
