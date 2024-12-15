@@ -193,6 +193,9 @@ app.register(import('./modules/transaction/transaction-routes'), {
 app.register(import('./modules/checkout/checkout-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/recipient/recipient-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });

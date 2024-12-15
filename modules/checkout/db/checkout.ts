@@ -87,6 +87,14 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
       )
     );
 
+    const { recipientName, recipientAddress, recipientPhone } = payload;
+
+    await prisma.recipient.upsert({
+      where: { userId: userId },
+      update: { recipientName, recipientAddress, recipientPhone },
+      create: { userId, recipientName, recipientAddress, recipientPhone },
+    });
+
     return await prisma.checkout.create({
       data: {
         userId,

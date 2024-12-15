@@ -23,6 +23,7 @@ model User {
   roles        UserRole[]     @default([customer])
   BasketItem   BasketItem[]
   FavoriteItem FavoriteItem[]
+  Recipient    Recipient?
 }
 
 model EmailCode {
@@ -145,6 +146,16 @@ model Checkout {
   updatedAt   DateTime      @updatedAt
   createdAt   DateTime      @default(now())
   Transaction Transaction[]
+}
+
+model Recipient {
+  userId           Int      @unique
+  recipientName    String
+  recipientAddress String
+  recipientPhone   String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
 }
 
 enum TransactionStatus {

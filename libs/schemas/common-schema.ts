@@ -170,3 +170,12 @@ export const CheckoutSchema = Type.Object(
   },
   { title: 'Checkout' }
 );
+
+export const RecipientSchema = Type.Object(
+  {
+    recipientName: Type.String(),
+    recipientAddress: Type.String(),
+    recipientPhone: Type.String(),
+  },
+  { title: 'Recipient' }
+);

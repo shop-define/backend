@@ -134,6 +134,16 @@ CREATE TABLE "Checkout" (
 );
 
 -- CreateTable
+CREATE TABLE "Recipient" (
+    "userId" INTEGER NOT NULL,
+    "recipientName" TEXT NOT NULL,
+    "recipientAddress" TEXT NOT NULL,
+    "recipientPhone" TEXT NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "Transaction" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -158,6 +168,9 @@ CREATE UNIQUE INDEX "BasketItem_userId_goodId_key" ON "BasketItem"("userId", "go
 -- CreateIndex
 CREATE UNIQUE INDEX "FavoriteItem_userId_goodId_key" ON "FavoriteItem"("userId", "goodId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Recipient_userId_key" ON "Recipient"("userId");
+
 -- AddForeignKey
 ALTER TABLE "GoodCategory" ADD CONSTRAINT "GoodCategory_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "GoodCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -178,6 +191,9 @@ ALTER TABLE "FavoriteItem" ADD CONSTRAINT "FavoriteItem_userId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "FavoriteItem" ADD CONSTRAINT "FavoriteItem_goodId_fkey" FOREIGN KEY ("goodId") REFERENCES "Good"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Recipient" ADD CONSTRAINT "Recipient_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_checkoutId_fkey" FOREIGN KEY ("checkoutId") REFERENCES "Checkout"("id") ON DELETE CASCADE ON UPDATE CASCADE;
