@@ -110,8 +110,39 @@ model PaymentMethod {
   createdAt   DateTime @default(now())
 }
 
+enum OrderStatus {
+  created
+  payed
+  delivery
+  delivered
+  success
+  canceled
+}
+
 model Checkout {
-  id          String        @id @default(cuid())
+  id     String @id @default(cuid())
+  userId Int
+
+  paymentMethodId   String?
+  paymentMethodName String?
+
+  deliveryMethodId   String
+  deliveryMethodName String
+
+  recipientName    String
+  recipientAddress String
+  recipientPhone   String
+
+  goodsIdList String[]
+  goodsPrice  Float[]
+  goodsCount  Int[]
+  goodsName   String[]
+
+  paymentTotal Float
+
+  status OrderStatus @default(created)
+
+  updatedAt   DateTime      @updatedAt
   createdAt   DateTime      @default(now())
   Transaction Transaction[]
 }
