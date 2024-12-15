@@ -1,5 +1,13 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { getGoods, getGoodById, getTotalGoods, createGood, updateGood, deleteGoodById } from './db/good';
+import {
+  getGoods,
+  getGoodById,
+  getTotalGoods,
+  createGood,
+  updateGood,
+  deleteGoodById,
+  getGoodsByGroup,
+} from './db/good';
 import { BackendError } from '../../index';
 
 export async function getGood(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
@@ -12,6 +20,25 @@ export async function getGood(req: FastifyRequest<{ Params: { id: string } }>, r
   }
 
   reply.sendWithStatus(200, good);
+}
+
+export async function getGoodGroup(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  const goodId = req.params.id;
+
+  const good = await getGoodById(goodId);
+
+  if (!good) {
+    throw new BackendError('Goods not found', 404);
+  }
+
+  if (good.articleNumber === null) {
+    reply.sendWithStatus(200, [good]);
+    return;
+  }
+
+  const goods = await getGoodsByGroup(good.articleNumber);
+
+  reply.sendWithStatus(200, goods);
 }
 
 export async function getGoodsList(
@@ -38,6 +65,8 @@ interface ICreateGoodBody {
   images: string[];
   categoryId: number | null;
   brandId: string | null;
+  articleNumber: string | null;
+  modifiedName: string | null;
 }
 
 export async function postGood(req: FastifyRequest<{ Body: ICreateGoodBody }>, reply: FastifyReply) {

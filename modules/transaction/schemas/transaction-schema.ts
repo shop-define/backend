@@ -11,6 +11,7 @@ const tag = 'Transaction';
 
 export const GetTransactionSchema: FastifySchema = {
   tags: [tag],
+  security: [{ BearerAuth: [] }],
   response: {
     200: ResponseWithStatus(TransactionSchema),
     404: ErrorSchema,
@@ -22,6 +23,7 @@ export const GetTransactionSchema: FastifySchema = {
 
 export const GetTransactionsListSchema: FastifySchema = {
   tags: [tag],
+  security: [{ BearerAuth: [] }],
   querystring: Type.Object({
     limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })),
     offset: Type.Optional(Type.Integer({ minimum: 0 })),

@@ -50,6 +50,8 @@ CREATE TABLE "Brand" (
 -- CreateTable
 CREATE TABLE "Good" (
     "id" TEXT NOT NULL,
+    "articleNumber" TEXT,
+    "modifiedName" TEXT,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL DEFAULT 0,

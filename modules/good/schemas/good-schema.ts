@@ -18,6 +18,17 @@ export const GetGoodSchema: FastifySchema = {
   }),
 };
 
+export const GetGoodGroup: FastifySchema = {
+  tags: ['Good'],
+  response: {
+    200: ResponseWithStatus(Type.Array(GoodSchema)),
+    404: ErrorSchema,
+  },
+  params: Type.Object({
+    id: GoodSchema.properties.id,
+  }),
+};
+
 export const GetGoodsListSchema: FastifySchema = {
   tags: ['Good'],
   querystring: Type.Object({
