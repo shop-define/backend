@@ -136,9 +136,9 @@ CREATE TABLE "Checkout" (
 -- CreateTable
 CREATE TABLE "Recipient" (
     "userId" INTEGER NOT NULL,
-    "recipientName" TEXT NOT NULL,
-    "recipientAddress" TEXT NOT NULL,
-    "recipientPhone" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

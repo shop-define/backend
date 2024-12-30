@@ -1,7 +1,7 @@
 import { JWT } from '@fastify/jwt';
 import { TokenPayload } from '../types/common-types';
 
-const AccessTokenExpiration = '15m';
+const AccessTokenExpiration = '1d';
 const RefreshTokenExpiration = '7d';
 
 export async function generatedAccessToken(ctx: JWT, payload: TokenPayload) {
