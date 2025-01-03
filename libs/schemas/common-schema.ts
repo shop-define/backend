@@ -136,6 +136,15 @@ export const TransactionSchema = Type.Object(
   { title: 'Transaction' }
 );
 
+export const RecipientSchema = Type.Object(
+  {
+    name: Type.String(),
+    address: Type.String(),
+    phone: Type.String(),
+  },
+  { title: 'Recipient' }
+);
+
 export const CheckoutSchema = Type.Object(
   {
     id: Type.String(),
@@ -169,13 +178,4 @@ export const CheckoutSchema = Type.Object(
     }),
   },
   { title: 'Checkout' }
-);
-
-export const RecipientSchema = Type.Object(
-  {
-    recipientName: Type.String(),
-    recipientAddress: Type.String(),
-    recipientPhone: Type.String(),
-  },
-  { title: 'Recipient' }
 );

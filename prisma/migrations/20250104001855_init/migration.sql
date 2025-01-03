@@ -7,6 +7,9 @@ CREATE TYPE "OrderStatus" AS ENUM ('created', 'payed', 'delivery', 'delivered', 
 -- CreateEnum
 CREATE TYPE "TransactionStatus" AS ENUM ('pending', 'success', 'error');
 
+-- CreateEnum
+CREATE TYPE "NewsStatus" AS ENUM ('draft', 'published');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -136,9 +139,9 @@ CREATE TABLE "Checkout" (
 -- CreateTable
 CREATE TABLE "Recipient" (
     "userId" INTEGER NOT NULL,
-    "recipientName" TEXT NOT NULL,
-    "recipientAddress" TEXT NOT NULL,
-    "recipientPhone" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -154,6 +157,20 @@ CREATE TABLE "Transaction" (
     "providerData" TEXT NOT NULL,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "News" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "htmlDocumentName" TEXT NOT NULL,
+    "status" "NewsStatus" NOT NULL DEFAULT 'draft',
+    "isPrimary" BOOLEAN NOT NULL DEFAULT false,
+    "publishedAt" TIMESTAMP(3),
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "News_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
