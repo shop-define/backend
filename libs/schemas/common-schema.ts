@@ -189,6 +189,9 @@ export const NewsSchema = Type.Object(
     images: Type.Array(Type.String()),
     status: Type.Enum({ draft: 'draft', published: 'published' }),
     isPrimary: Type.Boolean(),
+    publishedAt: Type.Union([Type.String(), Type.Null()]),
+    createdAt: Type.String(),
+    updatedAt: Type.String(),
   },
   { title: 'News' }
 );

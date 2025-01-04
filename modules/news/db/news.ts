@@ -37,6 +37,12 @@ type NewsBody = {
 };
 
 export async function createNews({ title, images, htmlDocumentName, status, isPrimary }: NewsBody) {
+  let publishedAt;
+
+  if (status === 'published') {
+    publishedAt = new Date();
+  }
+
   return await prismaClient.news.create({
     data: {
       title,
@@ -44,6 +50,7 @@ export async function createNews({ title, images, htmlDocumentName, status, isPr
       htmlDocumentName,
       status,
       isPrimary,
+      publishedAt,
     },
   });
 }
@@ -52,6 +59,12 @@ export async function updateNews(
   id: string,
   { title, images, htmlDocumentName, status, isPrimary }: Partial<NewsBody>
 ) {
+  let publishedAt;
+
+  if (status === 'published') {
+    publishedAt = new Date();
+  }
+
   return await prismaClient.news.update({
     where: {
       id,
@@ -62,6 +75,7 @@ export async function updateNews(
       htmlDocumentName,
       status,
       isPrimary,
+      publishedAt,
     },
   });
 }

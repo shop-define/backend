@@ -44,10 +44,12 @@ export const GetNewsListSchemaPrivate = {
   security: [{ BearerAuth: [] }],
 };
 
+const NewsBodyCreate = Type.Omit(NewsSchema, ['id', 'publishedAt', 'createdAt', 'updatedAt']);
+
 export const CreateNewsSchema: FastifySchema = {
   tags: [tag],
   security: [{ BearerAuth: [] }],
-  body: Type.Omit(NewsSchema, ['id']),
+  body: NewsBodyCreate,
   response: {
     200: ResponseWithStatus(NewsSchema),
     403: ErrorSchema,
@@ -61,7 +63,7 @@ export const UpdateNewsSchema: FastifySchema = {
   params: Type.Object({
     id: NewsSchema.properties.id,
   }),
-  body: Type.Partial(Type.Omit(NewsSchema, ['id'])),
+  body: Type.Partial(NewsBodyCreate),
   response: {
     200: ResponseWithStatus(NewsSchema),
     403: ErrorSchema,
