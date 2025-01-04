@@ -179,3 +179,16 @@ export const CheckoutSchema = Type.Object(
   },
   { title: 'Checkout' }
 );
+
+export const NewsSchema = Type.Object(
+  {
+    id: Type.String(),
+    title: Type.String(),
+    htmlDocumentName: Type.String(),
+    htmlContent: Type.String(),
+    images: Type.Array(Type.String()),
+    status: Type.Enum({ draft: 'draft', published: 'published' }),
+    isPrimary: Type.Boolean(),
+  },
+  { title: 'News' }
+);

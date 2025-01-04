@@ -3,7 +3,7 @@ import fastifyJWT, { JWT } from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 
 import { disconnectDatabase } from './libs/db/connect';
-import { setupBucket } from './libs/storage';
+import { setupBuckets } from './libs/storage';
 import { config } from './config';
 import { TokenPayload, UserRole } from './libs/types/common-types';
 
@@ -196,6 +196,9 @@ app.register(import('./modules/checkout/checkout-routes'), {
 app.register(import('./modules/recipient/recipient-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/news/news-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });
@@ -208,7 +211,7 @@ async function main() {
     }
     console.log(`Server listening at ${address}`);
   });
-  setupBucket();
+  setupBuckets();
 }
 
 // shutdown
