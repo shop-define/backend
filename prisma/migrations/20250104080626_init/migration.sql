@@ -164,6 +164,7 @@ CREATE TABLE "News" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "htmlDocumentName" TEXT NOT NULL,
+    "images" TEXT[],
     "status" "NewsStatus" NOT NULL DEFAULT 'draft',
     "isPrimary" BOOLEAN NOT NULL DEFAULT false,
     "publishedAt" TIMESTAMP(3),

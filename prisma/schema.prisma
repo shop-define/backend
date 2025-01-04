@@ -184,6 +184,7 @@ model News {
   id               String     @id @default(cuid())
   title            String
   htmlDocumentName String
+  images           String[]
   status           NewsStatus @default(draft)
   isPrimary        Boolean    @default(false)
   publishedAt      DateTime?
