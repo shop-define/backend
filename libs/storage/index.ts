@@ -37,17 +37,22 @@ export function getStorage() {
   return storage;
 }
 
-export async function setupBucket() {
+export async function setupBuckets() {
   const s3 = getStorage();
+  const bucketsNames = [config.awsStorage.bucketName, config.awsStorage.newsBucketName];
 
+  await Promise.all(bucketsNames.map(async (bucketName) => setupBucket(bucketName, s3)));
+}
+
+export async function setupBucket(bucketName: string, s3: S3Client) {
   try {
-    await s3.send(new HeadBucketCommand({ Bucket: config.awsStorage.bucketName }));
+    await s3.send(new HeadBucketCommand({ Bucket: bucketName }));
   } catch (e) {
     // eslint-disable-next-line
     if ((e as any).name === 'NotFound') {
       await s3.send(
         new CreateBucketCommand({
-          Bucket: config.awsStorage.bucketName,
+          Bucket: bucketName,
           ACL: 'public-read',
           CreateBucketConfiguration: {
             LocationConstraint: config.awsStorage.region as BucketLocationConstraint,
@@ -56,12 +61,12 @@ export async function setupBucket() {
       );
 
       const putBucketPolicyCommand = new PutBucketPolicyCommand({
-        Bucket: config.awsStorage.bucketName,
+        Bucket: bucketName,
         Policy: JSON.stringify(bucketPolicy),
       });
       await s3.send(putBucketPolicyCommand);
     } else {
-      console.log('S3 bucket not created');
+      console.log(`S3 bucket "${bucketName}" not created`);
     }
   }
 }

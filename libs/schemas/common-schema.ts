@@ -136,6 +136,15 @@ export const TransactionSchema = Type.Object(
   { title: 'Transaction' }
 );
 
+export const RecipientSchema = Type.Object(
+  {
+    name: Type.String(),
+    address: Type.String(),
+    phone: Type.String(),
+  },
+  { title: 'Recipient' }
+);
+
 export const CheckoutSchema = Type.Object(
   {
     id: Type.String(),
@@ -171,11 +180,18 @@ export const CheckoutSchema = Type.Object(
   { title: 'Checkout' }
 );
 
-export const RecipientSchema = Type.Object(
+export const NewsSchema = Type.Object(
   {
-    recipientName: Type.String(),
-    recipientAddress: Type.String(),
-    recipientPhone: Type.String(),
+    id: Type.String(),
+    title: Type.String(),
+    htmlDocumentName: Type.String(),
+    htmlContent: Type.String(),
+    images: Type.Array(Type.String()),
+    status: Type.Enum({ draft: 'draft', published: 'published' }),
+    isPrimary: Type.Boolean(),
+    publishedAt: Type.Union([Type.String(), Type.Null()]),
+    createdAt: Type.String(),
+    updatedAt: Type.String(),
   },
-  { title: 'Recipient' }
+  { title: 'News' }
 );

@@ -27,5 +27,7 @@ export const config = {
     secretKey: process.env.S3_SECRET_KEY || '',
     region: process.env.S3_REGION || '',
     bucketName: process.env.S3_BUCKET_NAME || '',
+    newsBucketName: process.env.S3_NEWS_BUCKET_NAME || '',
   },
+  privatePrefix: '/private',
 };
