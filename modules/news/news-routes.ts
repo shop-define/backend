@@ -32,11 +32,20 @@ async function routes(app: FastifyInstance) {
 
   app.register(
     async (newsRoutes) => {
-      newsRoutes.get('/:id', { schema: GetNewsSchemaPrivate }, getNewsPrivate);
-      newsRoutes.get('/', { schema: GetNewsListSchemaPrivate }, getNewsListPrivate);
+      newsRoutes.get(
+        '/:id',
+        { preHandler: [app.validateRole(routesAccess.news.privateGet.accessGroups)], schema: GetNewsSchemaPrivate },
+        getNewsPrivate
+      );
+      newsRoutes.get(
+        '/',
+        { preHandler: [app.validateRole(routesAccess.news.privateGet.accessGroups)], schema: GetNewsListSchemaPrivate },
+        getNewsListPrivate
+      );
       newsRoutes.post(
         '/',
         {
+          preHandler: [app.validateRole(routesAccess.news.create.accessGroups)],
           schema: CreateNewsSchema,
         },
         postNews
@@ -44,6 +53,7 @@ async function routes(app: FastifyInstance) {
       newsRoutes.patch(
         '/:id',
         {
+          preHandler: [app.validateRole(routesAccess.news.update.accessGroups)],
           schema: UpdateNewsSchema,
         },
         patchNews
@@ -51,6 +61,7 @@ async function routes(app: FastifyInstance) {
       newsRoutes.delete(
         '/:id',
         {
+          preHandler: [app.validateRole(routesAccess.news.delete.accessGroups)],
           schema: DeleteNewsSchema,
         },
         deleteNews

@@ -191,3 +191,9 @@ model News {
   updatedAt        DateTime   @updatedAt
   createdAt        DateTime   @default(now())
 }
+
+model Settings {
+  id    Int    @id @unique @default(1)
+  title String
+  logo  String
+}

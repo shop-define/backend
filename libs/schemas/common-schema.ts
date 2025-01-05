@@ -195,3 +195,11 @@ export const NewsSchema = Type.Object(
   },
   { title: 'News' }
 );
+
+export const SettingsSchema = Type.Object(
+  {
+    title: Type.String(),
+    logo: Type.String(),
+  },
+  { title: 'Settings' }
+);

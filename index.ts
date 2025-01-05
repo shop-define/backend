@@ -199,6 +199,9 @@ app.register(import('./modules/recipient/recipient-routes'), {
 app.register(import('./modules/news/news-routes'), {
   prefix: config.app.apiPrefix,
 });
+app.register(import('./modules/settings/settings-routes'), {
+  prefix: config.app.apiPrefix,
+});
 app.get('/healthcheck', (_, res) => {
   res.send({ message: 'Success' });
 });
