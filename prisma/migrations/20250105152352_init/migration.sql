@@ -174,6 +174,15 @@ CREATE TABLE "News" (
     CONSTRAINT "News_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Settings" (
+    "id" INTEGER NOT NULL DEFAULT 1,
+    "title" TEXT NOT NULL,
+    "logo" TEXT NOT NULL,
+
+    CONSTRAINT "Settings_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -188,6 +197,9 @@ CREATE UNIQUE INDEX "FavoriteItem_userId_goodId_key" ON "FavoriteItem"("userId",
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Recipient_userId_key" ON "Recipient"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Settings_id_key" ON "Settings"("id");
 
 -- AddForeignKey
 ALTER TABLE "GoodCategory" ADD CONSTRAINT "GoodCategory_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "GoodCategory"("id") ON DELETE SET NULL ON UPDATE CASCADE;

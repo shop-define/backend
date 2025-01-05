@@ -96,4 +96,9 @@ export const routesAccess = {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
   },
+  settings: {
+    update: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
+  },
 };
