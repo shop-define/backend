@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { getCheckouts, getCheckoutById, getTotalCheckouts, createCheckout } from './db/checkout';
 import { BackendError } from '../../index';
+import { getCheckoutPayment } from '../../libs/helpers/get-checkout-payment';
 
 export async function getCheckout(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
   const checkoutId = req.params.id;
@@ -15,7 +16,10 @@ export async function getCheckout(req: FastifyRequest<{ Params: { id: string } }
     throw new BackendError('Checkout not permitted', 403);
   }
 
-  reply.sendWithStatus(200, checkout);
+  reply.sendWithStatus(200, {
+    ...checkout,
+    paymentTotal: getCheckoutPayment(checkout),
+  });
 }
 
 export async function getCheckoutsList(
@@ -31,7 +35,12 @@ export async function getCheckoutsList(
     throw new BackendError('Checkouts not found', 404);
   }
 
-  reply.sendWithPagination(200, checkoutsList, checkoutsTotal);
+  const preparedCheckouts = checkoutsList.map((checkout) => ({
+    ...checkout,
+    paymentTotal: getCheckoutPayment(checkout),
+  }));
+
+  reply.sendWithPagination(200, preparedCheckouts, checkoutsTotal);
 }
 
 interface ICreateCheckoutBody {
@@ -56,5 +65,8 @@ export async function postCheckout(req: FastifyRequest<{ Body: ICreateCheckoutBo
     throw new BackendError('Checkout not created', 409);
   }
 
-  reply.sendWithStatus(200, checkout);
+  reply.sendWithStatus(200, {
+    ...checkout,
+    paymentTotal: getCheckoutPayment(checkout),
+  });
 }

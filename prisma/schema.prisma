@@ -61,6 +61,7 @@ model Good {
   title         String
   description   String
   price         Float          @default(0)
+  priceWithDisc Float          @default(0)
   count         Int            @default(0)
   images        String[]
   categoryId    Int?
@@ -138,8 +139,6 @@ model Checkout {
   goodsPrice  Float[]
   goodsCount  Int[]
   goodsName   String[]
-
-  paymentTotal Float
 
   status OrderStatus @default(created)
 

@@ -61,11 +61,8 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
       throw new BackendError('Good not found', 404);
     }
 
-    const goodsPrices = goods.map((item) => item!.price);
+    const goodsPrices = goods.map((item) => item!.priceWithDisc || item!.price);
     const goodsNames = goods.map((item) => item!.title);
-    const paymentTotal = goodsPrices
-      .map((price, index) => price * payload.goodsCount[index])
-      .reduce((acc, curr) => acc + curr, 0);
 
     const updatedGoods = goods.map((good, index) => {
       const remainingCount = good!.count - payload.goodsCount[index];
@@ -102,7 +99,6 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
         deliveryMethodName: deliveryTitle,
         goodsPrice: goodsPrices,
         goodsName: goodsNames,
-        paymentTotal,
       },
     });
   });

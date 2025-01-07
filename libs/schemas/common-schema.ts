@@ -71,6 +71,7 @@ export const GoodSchema = Type.Object(
     title: Type.String(),
     description: Type.String(),
     price: Type.Number({ minimum: 0 }),
+    priceWithDisc: Type.Number({ minimum: 0 }),
     count: Type.Integer({ minimum: 0 }),
     images: Type.Array(Type.String()),
     categoryId: Type.Optional(Type.Union([Type.Null(), GoodCategorySchema.properties.id], { default: null })),
