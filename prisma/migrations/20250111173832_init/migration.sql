@@ -2,6 +2,9 @@
 CREATE TYPE "UserRole" AS ENUM ('seller', 'customer', 'admin');
 
 -- CreateEnum
+CREATE TYPE "GoodStatus" AS ENUM ('draft', 'published');
+
+-- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('created', 'payed', 'delivery', 'delivered', 'success', 'canceled');
 
 -- CreateEnum
@@ -60,8 +63,9 @@ CREATE TABLE "Good" (
     "modifiedName" TEXT,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "status" "GoodStatus" NOT NULL DEFAULT 'draft',
     "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "priceWithDisc" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "priceWithDisc" DOUBLE PRECISION,
     "count" INTEGER NOT NULL DEFAULT 0,
     "images" TEXT[],
     "categoryId" INTEGER,

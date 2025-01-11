@@ -68,16 +68,17 @@ export const BrandSchema = Type.Object(
 export const GoodSchema = Type.Object(
   {
     id: Type.String(),
+    status: Type.Enum({ draft: 'draft', published: 'published' }),
     title: Type.String(),
-    description: Type.String(),
+    description: Type.String({ default: '' }),
     price: Type.Number({ minimum: 0 }),
-    priceWithDisc: Type.Number({ minimum: 0 }),
-    count: Type.Integer({ minimum: 0 }),
-    images: Type.Array(Type.String()),
+    priceWithDisc: Type.Optional(Type.Union([Type.Null(), Type.Number({ minimum: 0 })], { default: null })),
+    count: Type.Integer({ minimum: 0, default: 0 }),
+    images: Type.Array(Type.String(), { default: [] }),
     categoryId: Type.Optional(Type.Union([Type.Null(), GoodCategorySchema.properties.id], { default: null })),
     brandId: Type.Optional(Type.Union([Type.Null(), BrandSchema.properties.id], { default: null })),
-    modifiedName: Type.String(),
-    articleNumber: Type.String(),
+    modifiedName: Type.Optional(Type.String()),
+    articleNumber: Type.Optional(Type.String()),
   },
   { title: 'Good' }
 );

@@ -54,14 +54,20 @@ model Brand {
   createdAt   DateTime @default(now())
 }
 
+enum GoodStatus {
+  draft
+  published
+}
+
 model Good {
   id            String         @id @default(cuid())
   articleNumber String?
   modifiedName  String?
   title         String
   description   String
+  status        GoodStatus     @default(draft)
   price         Float          @default(0)
-  priceWithDisc Float          @default(0)
+  priceWithDisc Float?
   count         Int            @default(0)
   images        String[]
   categoryId    Int?
