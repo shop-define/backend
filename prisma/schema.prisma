@@ -38,6 +38,7 @@ model GoodCategory {
   title       String
   description String
   image       String?
+  icon        String?
   parentId    Int?
   parent      GoodCategory?  @relation("GoodCategory", fields: [parentId], references: [id])
   children    GoodCategory[] @relation("GoodCategory")
@@ -69,6 +70,9 @@ model Good {
   price         Float          @default(0)
   priceWithDisc Float?
   count         Int            @default(0)
+  delivering    Int            @default(0)
+  bought        Int            @default(0)
+  views         Int            @default(0)
   images        String[]
   categoryId    Int?
   category      GoodCategory?  @relation(fields: [categoryId], references: [id])

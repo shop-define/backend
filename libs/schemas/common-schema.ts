@@ -43,7 +43,8 @@ export const GoodCategorySchema = Type.Object(
     id: Type.Integer(),
     title: Type.String(),
     description: Type.String(),
-    image: Type.String(),
+    image: Type.Optional(Type.Union([Type.Null(), Type.String()], { default: null })),
+    icon: Type.Optional(Type.Union([Type.Null(), Type.String()], { default: null })),
     parentId: Type.Optional(Type.Union([Type.Null(), Type.Number()], { default: null })),
   },
   { title: 'GoodCategory' }
@@ -172,6 +173,8 @@ export const CheckoutSchema = Type.Object(
       success: 'success',
       canceled: 'canceled',
     }),
+    createdAt: Type.String(),
+    updatedAt: Type.String(),
   },
   { title: 'Checkout' }
 );

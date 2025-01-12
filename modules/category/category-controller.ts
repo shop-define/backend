@@ -25,9 +25,7 @@ export async function getCategoriesList(
   req: FastifyRequest<{ Querystring: { offset?: number; limit?: number } }>,
   reply: FastifyReply
 ) {
-  const { offset = 0, limit = 10 } = req.query;
-
-  const categoriesList = await getCategories(offset, limit);
+  const categoriesList = await getCategories();
   const categoriesTotal = await getTotalCategories();
 
   if (!categoriesList) {

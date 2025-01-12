@@ -88,6 +88,8 @@ export const GetGoodsListPrivateSchema: FastifySchema = {
               BasketItem: Type.Number(),
               FavoriteItem: Type.Number(),
             }),
+            bought: Type.Integer({ minimum: 0, default: 0 }),
+            delivering: Type.Integer({ minimum: 0, default: 0 }),
           }),
         ])
       )

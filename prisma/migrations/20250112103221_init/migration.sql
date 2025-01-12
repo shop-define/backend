@@ -39,6 +39,7 @@ CREATE TABLE "GoodCategory" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "image" TEXT,
+    "icon" TEXT,
     "parentId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -67,6 +68,9 @@ CREATE TABLE "Good" (
     "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "priceWithDisc" DOUBLE PRECISION,
     "count" INTEGER NOT NULL DEFAULT 0,
+    "delivering" INTEGER NOT NULL DEFAULT 0,
+    "bought" INTEGER NOT NULL DEFAULT 0,
+    "views" INTEGER NOT NULL DEFAULT 0,
     "images" TEXT[],
     "categoryId" INTEGER,
     "brandId" TEXT,

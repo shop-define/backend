@@ -1,5 +1,4 @@
 import { UserRole } from '../libs/types/common-types';
-import { GetCheckoutSchema } from '../modules/checkout/schemas/checkout-schema';
 
 export const routesAccess = {
   goodCategories: {
@@ -77,7 +76,7 @@ export const routesAccess = {
     },
   },
   checkout: {
-    create: {
+    get: {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },
     update: {

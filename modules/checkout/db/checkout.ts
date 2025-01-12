@@ -9,7 +9,7 @@ export async function getCheckoutById(id: string) {
   });
 }
 
-export async function getCheckouts(userId: number, offset: number, limit: number) {
+export async function getCheckouts(userId: number | undefined, offset: number, limit: number) {
   return await prismaClient.checkout.findMany({
     where: {
       userId: userId,
@@ -19,7 +19,7 @@ export async function getCheckouts(userId: number, offset: number, limit: number
   });
 }
 
-export async function getTotalCheckouts(userId: number) {
+export async function getTotalCheckouts(userId?: number) {
   return await prismaClient.checkout.count({
     where: {
       userId: userId,
@@ -101,5 +101,38 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
         goodsName: goodsNames,
       },
     });
+  });
+}
+
+type CheckoutUpdateBody = {
+  userId: number;
+
+  paymentMethodId: string;
+  paymentMethodName: string;
+
+  deliveryMethodId: string;
+  deliveryMethodName: string;
+
+  recipientName: string;
+  recipientAddress: string;
+  recipientPhone: string;
+
+  goodsIdList: string[];
+  goodsPrice: number[];
+  goodsCount: number[];
+  goodsName: string[];
+
+  status: 'created' | 'payed' | 'delivery' | 'delivered' | 'success' | 'canceled';
+};
+
+export async function updateCheckout(id: string, payload: Partial<CheckoutUpdateBody>) {
+  console.log(id);
+  return prismaClient.checkout.update({
+    where: {
+      id,
+    },
+    data: {
+      ...payload,
+    },
   });
 }

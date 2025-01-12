@@ -45,6 +45,8 @@ export const CreateCheckoutSchema: FastifySchema = {
     'goodsName',
     'paymentTotal',
     'status',
+    'createdAt',
+    'updatedAt',
   ]),
   response: {
     200: ResponseWithStatus(CheckoutSchema),
@@ -59,7 +61,7 @@ export const UpdateCheckoutSchema: FastifySchema = {
   params: Type.Object({
     id: CheckoutSchema.properties.id,
   }),
-  body: Type.Partial(Type.Omit(CheckoutSchema, ['id'])),
+  body: Type.Partial(Type.Omit(CheckoutSchema, ['id', 'createdAt', 'updatedAt', 'userId', 'paymentTotal'])),
   response: {
     200: ResponseWithStatus(CheckoutSchema),
     403: ErrorSchema,
