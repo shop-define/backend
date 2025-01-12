@@ -10,10 +10,10 @@ import {
 } from './db/good';
 import { BackendError } from '../../index';
 
-export async function getGood(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+async function getGood(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply, filter?: 'published') {
   const goodId = req.params.id;
 
-  const good = await getGoodById(goodId);
+  const good = await getGoodById(goodId, filter);
 
   if (!good) {
     throw new BackendError('Good not found', 404);
@@ -22,10 +22,22 @@ export async function getGood(req: FastifyRequest<{ Params: { id: string } }>, r
   reply.sendWithStatus(200, good);
 }
 
-export async function getGoodGroup(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+export async function getGoodPublic(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  return getGood(req, reply, 'published');
+}
+
+export async function getGoodPrivate(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  return getGood(req, reply);
+}
+
+async function getGoodGroup(
+  req: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply,
+  filter?: 'published'
+) {
   const goodId = req.params.id;
 
-  const good = await getGoodById(goodId);
+  const good = await getGoodById(goodId, filter);
 
   if (!good) {
     throw new BackendError('Goods not found', 404);
@@ -36,25 +48,69 @@ export async function getGoodGroup(req: FastifyRequest<{ Params: { id: string } 
     return;
   }
 
-  const goods = await getGoodsByGroup(good.articleNumber);
+  const goods = await getGoodsByGroup(good.articleNumber, filter);
 
   reply.sendWithStatus(200, goods);
 }
 
-export async function getGoodsList(
-  req: FastifyRequest<{ Querystring: { offset?: number; limit?: number } }>,
-  reply: FastifyReply
-) {
-  const { offset = 0, limit = 10 } = req.query;
+export async function getGoodGroupPublic(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  return getGoodGroup(req, reply, 'published');
+}
 
-  const goodsList = await getGoods(offset, limit);
-  const goodsTotal = await getTotalGoods();
+export async function getGoodGroupPrivate(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  return getGoodGroup(req, reply);
+}
+
+interface GoodsListQuery {
+  offset?: number;
+  limit?: number;
+  search?: string;
+  sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft';
+}
+
+async function getGoodsList(
+  req: FastifyRequest<{ Querystring: GoodsListQuery }>,
+  reply: FastifyReply,
+  filter?: 'published'
+) {
+  const { offset = 0, limit = 10, search, sort } = req.query;
+
+  const goodsList = await getGoods(offset, limit, sort, search, filter);
+  const goodsTotal = await getTotalGoods(search, filter);
 
   if (!goodsList) {
     throw new BackendError('Goods not found', 404);
   }
 
   reply.sendWithPagination(200, goodsList, goodsTotal);
+}
+
+export function getGoodsListPublic(
+  req: FastifyRequest<{
+    Querystring: {
+      offset?: number;
+      limit?: number;
+      search?: string;
+      sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price';
+    };
+  }>,
+  reply: FastifyReply
+) {
+  return getGoodsList(req, reply, 'published');
+}
+
+export function getGoodsListPrivate(
+  req: FastifyRequest<{
+    Querystring: {
+      offset?: number;
+      limit?: number;
+      search?: string;
+      sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft';
+    };
+  }>,
+  reply: FastifyReply
+) {
+  return getGoodsList(req, reply);
 }
 
 interface ICreateGoodBody {

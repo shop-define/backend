@@ -14,6 +14,9 @@ export const routesAccess = {
     },
   },
   good: {
+    privateGet: {
+      accessGroups: ['seller', 'admin'] as UserRole[],
+    },
     create: {
       accessGroups: ['seller', 'admin'] as UserRole[],
     },

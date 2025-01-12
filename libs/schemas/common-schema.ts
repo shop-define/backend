@@ -3,7 +3,7 @@ import { TSchema, Type } from '@sinclair/typebox';
 export const ResponseWithStatus = (dataType: TSchema) => {
   return Type.Object(
     {
-      status: Type.Union([Type.Literal('ok'), Type.Literal('error')]),
+      status: Type.String({ enum: ['ok', 'error'] }),
       data: dataType,
     },
     { title: 'ResponseWithStatus' }
@@ -13,7 +13,7 @@ export const ResponseWithStatus = (dataType: TSchema) => {
 export const ResponseWithPagination = (dataType: TSchema) => {
   return Type.Object(
     {
-      status: Type.Union([Type.Literal('ok'), Type.Literal('error')]),
+      status: Type.String({ enum: ['ok', 'error'] }),
       data: dataType,
       total: Type.Integer(),
     },
@@ -21,13 +21,7 @@ export const ResponseWithPagination = (dataType: TSchema) => {
   );
 };
 
-export const UserRoleSchema = Type.Array(
-  Type.Enum({
-    seller: 'seller',
-    customer: 'customer',
-    admin: 'admin',
-  })
-);
+export const UserRoleSchema = Type.Array(Type.String({ enum: ['user', 'admin', 'seller'] }));
 
 export const ErrorSchema = ResponseWithStatus(
   Type.Object({

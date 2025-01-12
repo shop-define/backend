@@ -1,36 +1,107 @@
 import { prismaClient } from '../../../libs/db/prisma-client';
 
-export async function getGoodById(id: string) {
+export async function getGoodById(id: string, filter?: 'published') {
   const good = await prismaClient.good.findUnique({
     where: {
       id,
+      status: filter,
     },
   });
 
   return good;
 }
 
-export async function getGoodsByGroup(group: string) {
+export async function getGoodsByGroup(group: string, filter?: 'published') {
   return await prismaClient.good.findMany({
     where: {
       articleNumber: group,
+      status: filter,
     },
   });
 }
 
-export async function getGoods(offset: number, limit: number) {
-  const categories = await prismaClient.good.findMany({
-    skip: offset,
-    take: limit,
-  });
-
-  return categories;
+function getOrder(
+  sort: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft' = 'date'
+) {
+  const orderBy = [];
+  if (sort.includes('date')) {
+    orderBy.push({ createdAt: sort === 'date_ask' ? 'asc' : 'desc' });
+  }
+  if (sort.includes('count')) {
+    orderBy.push({ createdAt: sort === 'count_ask' ? 'asc' : 'desc' });
+  }
+  if (sort.includes('price')) {
+    orderBy.push({ price: sort === 'price_ask' ? 'asc' : 'desc' });
+  }
+  if (sort.includes('published') || sort.includes('draft')) {
+    orderBy.push({ status: sort === 'published' ? 'desc' : 'asc' });
+  }
+  return orderBy as never;
 }
 
-export async function getTotalGoods() {
-  const goods = await prismaClient.good.count();
+export async function getGoods(
+  offset: number,
+  limit: number,
+  sort: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft' = 'date',
+  search?: string,
+  filter?: 'published'
+) {
+  return await prismaClient.good.findMany({
+    skip: offset,
+    take: limit,
+    where: {
+      status: filter,
+      OR: search
+        ? [
+            {
+              title: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ]
+        : undefined,
+    },
+    orderBy: getOrder(sort),
+    include: {
+      _count: {
+        select: {
+          BasketItem: true,
+          FavoriteItem: true,
+        },
+      },
+    },
+  });
+}
 
-  return goods;
+export async function getTotalGoods(search?: string, filter?: 'published') {
+  return prismaClient.good.count({
+    where: {
+      status: filter,
+      OR: search
+        ? [
+            {
+              title: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ]
+        : undefined,
+    },
+  });
 }
 
 type GoodBody = {
