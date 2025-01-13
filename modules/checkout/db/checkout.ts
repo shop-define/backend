@@ -66,12 +66,14 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
 
     const updatedGoods = goods.map((good, index) => {
       const remainingCount = good!.count - payload.goodsCount[index];
+      const deliveringCount = good!.delivering + payload.goodsCount[index];
       if (remainingCount < 0) {
         throw new BackendError('Good count more then remainder', 400);
       }
       return {
         id: good!.id,
         count: remainingCount,
+        deliveringCount,
       };
     });
 
@@ -79,7 +81,7 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
       updatedGoods.map((updatedGood) =>
         prisma.good.update({
           where: { id: updatedGood.id },
-          data: { count: updatedGood.count },
+          data: { count: updatedGood.count, delivering: updatedGood.deliveringCount },
         })
       )
     );
