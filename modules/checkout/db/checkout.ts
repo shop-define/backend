@@ -126,7 +126,6 @@ type CheckoutUpdateBody = {
 };
 
 export async function updateCheckout(id: string, payload: Partial<CheckoutUpdateBody>) {
-  console.log(id);
   return prismaClient.checkout.update({
     where: {
       id,

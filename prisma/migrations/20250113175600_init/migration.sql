@@ -130,6 +130,7 @@ CREATE TABLE "Checkout" (
     "paymentMethodName" TEXT,
     "deliveryMethodId" TEXT NOT NULL,
     "deliveryMethodName" TEXT NOT NULL,
+    "track" TEXT,
     "recipientName" TEXT NOT NULL,
     "recipientAddress" TEXT NOT NULL,
     "recipientPhone" TEXT NOT NULL,

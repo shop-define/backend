@@ -152,6 +152,7 @@ export const CheckoutSchema = Type.Object(
 
     deliveryMethodId: Type.String(),
     deliveryMethodName: Type.String(),
+    track: Type.String(),
 
     recipientName: Type.String(),
     recipientAddress: Type.String(),

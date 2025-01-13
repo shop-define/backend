@@ -47,6 +47,7 @@ export const CreateCheckoutSchema: FastifySchema = {
     'status',
     'createdAt',
     'updatedAt',
+    'track',
   ]),
   response: {
     200: ResponseWithStatus(CheckoutSchema),
