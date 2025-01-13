@@ -2,6 +2,8 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { getCheckouts, getCheckoutById, getTotalCheckouts, createCheckout, updateCheckout } from './db/checkout';
 import { BackendError } from '../../index';
 import { getCheckoutPayment } from '../../libs/helpers/get-checkout-payment';
+import { Type } from '@sinclair/typebox';
+import { CheckoutSchema } from '../../libs/schemas/common-schema';
 
 export async function getCheckout(
   req: FastifyRequest<{ Params: { id: string } }>,
@@ -30,15 +32,30 @@ export async function getCheckoutPrivate(req: FastifyRequest<{ Params: { id: str
   return getCheckout(req, reply, false);
 }
 
+type PrivateQuery = {
+  offset?: number;
+  limit?: number;
+  search?: string;
+  sort?: 'date' | 'date_ask' | 'recipientName' | 'recipientName_ask';
+  filter?: 'created' | 'payed' | 'delivery' | 'delivered' | 'success' | 'canceled';
+};
+
 export async function getCheckoutsList(
-  req: FastifyRequest<{ Querystring: { offset?: number; limit?: number } }>,
+  req: FastifyRequest<{ Querystring: PrivateQuery }>,
   reply: FastifyReply,
   depersonal = false
 ) {
-  const { offset = 0, limit = 10 } = req.query;
+  const { offset = 0, limit = 10, search, sort, filter } = req.query;
 
-  const checkoutsList = await getCheckouts(depersonal ? undefined : (req.userId as number), offset, limit);
-  const checkoutsTotal = await getTotalCheckouts(depersonal ? undefined : (req.userId as number));
+  const checkoutsList = await getCheckouts(
+    depersonal ? undefined : (req.userId as number),
+    offset,
+    limit,
+    search,
+    sort,
+    filter
+  );
+  const checkoutsTotal = await getTotalCheckouts(depersonal ? undefined : (req.userId as number), search, sort, filter);
 
   if (!checkoutsList) {
     throw new BackendError('Checkouts not found', 404);
@@ -52,10 +69,7 @@ export async function getCheckoutsList(
   reply.sendWithPagination(200, preparedCheckouts, checkoutsTotal);
 }
 
-export async function getCheckoutsListPrivate(
-  req: FastifyRequest<{ Querystring: { offset?: number; limit?: number } }>,
-  reply: FastifyReply
-) {
+export async function getCheckoutsListPrivate(req: FastifyRequest<{ Querystring: PrivateQuery }>, reply: FastifyReply) {
   return getCheckoutsList(req, reply, true);
 }
 

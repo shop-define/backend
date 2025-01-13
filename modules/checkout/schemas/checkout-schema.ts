@@ -32,6 +32,22 @@ export const GetCheckoutListSchema: FastifySchema = {
   },
 };
 
+export const GetCheckoutListPrivateSchema: FastifySchema = {
+  tags: ['Checkout'],
+  security: [{ BearerAuth: [] }],
+  querystring: Type.Object({
+    limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })),
+    offset: Type.Optional(Type.Integer({ minimum: 0 })),
+    search: Type.Optional(Type.String()),
+    sort: Type.Optional(Type.String({ enum: ['date', 'date_ask', 'recipientName', 'recipientName_ask'] })),
+    filter: Type.Optional(CheckoutSchema.properties.status),
+  }),
+  response: {
+    200: ResponseWithPagination(Type.Array(CheckoutSchema)),
+    404: ErrorSchema,
+  },
+};
+
 export const CreateCheckoutSchema: FastifySchema = {
   tags: ['Checkout'],
   security: [{ BearerAuth: [] }],

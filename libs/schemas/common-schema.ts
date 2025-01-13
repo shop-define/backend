@@ -166,13 +166,8 @@ export const CheckoutSchema = Type.Object(
 
     paymentTotal: Type.Number({ minimum: 0 }),
 
-    status: Type.Enum({
-      created: 'created',
-      payed: 'payed',
-      delivery: 'delivery',
-      delivered: 'delivered',
-      success: 'success',
-      canceled: 'canceled',
+    status: Type.String({
+      enum: ['created', 'payed', 'delivery', 'delivered', 'success', 'canceled'],
     }),
     createdAt: Type.String(),
     updatedAt: Type.String(),
