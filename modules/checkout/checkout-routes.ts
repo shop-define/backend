@@ -9,6 +9,7 @@ import {
 } from './checkout-controller';
 import {
   CreateCheckoutSchema,
+  GetCheckoutListPrivateSchema,
   GetCheckoutListSchema,
   GetCheckoutSchema,
   UpdateCheckoutSchema,
@@ -63,7 +64,7 @@ async function routes(app: FastifyInstance) {
         '/',
         {
           preHandler: [app.validateRole(routesAccess.checkout.get.accessGroups)],
-          schema: GetCheckoutListSchema,
+          schema: GetCheckoutListPrivateSchema,
         },
         getCheckoutsListPrivate
       );

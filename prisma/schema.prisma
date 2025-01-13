@@ -140,6 +140,7 @@ model Checkout {
 
   deliveryMethodId   String
   deliveryMethodName String
+  track              String?
 
   recipientName    String
   recipientAddress String

@@ -9,21 +9,86 @@ export async function getCheckoutById(id: string) {
   });
 }
 
-export async function getCheckouts(userId: number | undefined, offset: number, limit: number) {
+function getOrder(sort: 'date' | 'date_ask' | 'recipientName' | 'recipientName_ask') {
+  const orderBy = [];
+  if (sort.includes('date')) {
+    orderBy.push({ createdAt: sort === 'date_ask' ? 'asc' : 'desc' });
+  }
+  if (sort.includes('recipientName')) {
+    orderBy.push({ recipientName: sort === 'recipientName_ask' ? 'asc' : 'desc' });
+  }
+  return orderBy as never;
+}
+
+type Queries = {
+  search?: string;
+  sort?: 'date' | 'date_ask' | 'recipientName' | 'recipientName_ask';
+  filter?: 'created' | 'payed' | 'delivery' | 'delivered' | 'success' | 'canceled';
+};
+
+export async function getCheckouts(
+  userId: number | undefined,
+  offset: number,
+  limit: number,
+  search?: Queries['search'],
+  sort?: Queries['sort'],
+  filter?: Queries['filter']
+) {
   return await prismaClient.checkout.findMany({
     where: {
       userId: userId,
+      status: filter,
+      OR: search
+        ? [
+            {
+              id: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              recipientName: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ]
+        : undefined,
     },
     skip: offset,
     take: limit,
+    orderBy: getOrder(sort ?? 'date'),
   });
 }
 
-export async function getTotalCheckouts(userId?: number) {
+export async function getTotalCheckouts(
+  userId?: number,
+  search?: Queries['search'],
+  sort?: Queries['sort'],
+  filter?: Queries['filter']
+) {
   return await prismaClient.checkout.count({
     where: {
       userId: userId,
+      status: filter,
+      OR: search
+        ? [
+            {
+              id: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              recipientName: {
+                contains: search,
+                mode: 'insensitive',
+              },
+            },
+          ]
+        : undefined,
     },
+    orderBy: getOrder(sort ?? 'date'),
   });
 }
 
@@ -66,12 +131,14 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
 
     const updatedGoods = goods.map((good, index) => {
       const remainingCount = good!.count - payload.goodsCount[index];
+      const deliveringCount = good!.delivering + payload.goodsCount[index];
       if (remainingCount < 0) {
         throw new BackendError('Good count more then remainder', 400);
       }
       return {
         id: good!.id,
         count: remainingCount,
+        deliveringCount,
       };
     });
 
@@ -79,7 +146,7 @@ export async function createCheckout(userId: number, payload: CheckoutBody) {
       updatedGoods.map((updatedGood) =>
         prisma.good.update({
           where: { id: updatedGood.id },
-          data: { count: updatedGood.count },
+          data: { count: updatedGood.count, delivering: updatedGood.deliveringCount },
         })
       )
     );
@@ -126,13 +193,62 @@ type CheckoutUpdateBody = {
 };
 
 export async function updateCheckout(id: string, payload: Partial<CheckoutUpdateBody>) {
-  console.log(id);
-  return prismaClient.checkout.update({
-    where: {
-      id,
-    },
-    data: {
-      ...payload,
-    },
+  return await prismaClient.$transaction(async (prisma) => {
+    const oldCheckout = await getCheckoutById(id);
+    if (oldCheckout?.status === 'canceled') {
+      throw new BackendError('Checkout has been canceled', 400);
+    }
+    if (payload.status) {
+      if (oldCheckout && payload.status === 'success' && oldCheckout.status !== 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                delivering: { increment: -oldCheckout.goodsCount[index] },
+                bought: { increment: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+
+      if (oldCheckout && payload.status === 'canceled' && oldCheckout.status === 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                count: { increment: oldCheckout.goodsCount[index] },
+                bought: { decrement: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+
+      if (oldCheckout && payload.status === 'canceled' && oldCheckout.status !== 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                count: { increment: oldCheckout.goodsCount[index] },
+                delivering: { decrement: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+    }
+
+    return await prisma.checkout.update({
+      where: {
+        id,
+      },
+      data: {
+        ...payload,
+      },
+    });
   });
 }
