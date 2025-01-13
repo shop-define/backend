@@ -128,12 +128,62 @@ type CheckoutUpdateBody = {
 };
 
 export async function updateCheckout(id: string, payload: Partial<CheckoutUpdateBody>) {
-  return prismaClient.checkout.update({
-    where: {
-      id,
-    },
-    data: {
-      ...payload,
-    },
+  return await prismaClient.$transaction(async (prisma) => {
+    const oldCheckout = await getCheckoutById(id);
+    if (oldCheckout?.status === 'canceled') {
+      throw new BackendError('Checkout has been canceled', 400);
+    }
+    if (payload.status) {
+      if (oldCheckout && payload.status === 'success' && oldCheckout.status !== 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                delivering: { increment: -oldCheckout.goodsCount[index] },
+                bought: { increment: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+
+      if (oldCheckout && payload.status === 'canceled' && oldCheckout.status === 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                count: { increment: oldCheckout.goodsCount[index] },
+                bought: { decrement: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+
+      if (oldCheckout && payload.status === 'canceled' && oldCheckout.status !== 'success') {
+        await Promise.all(
+          oldCheckout.goodsIdList.map((goodId: string, index) =>
+            prisma.good.update({
+              where: { id: goodId },
+              data: {
+                count: { increment: oldCheckout.goodsCount[index] },
+                delivering: { decrement: oldCheckout.goodsCount[index] },
+              },
+            })
+          )
+        );
+      }
+    }
+
+    return await prisma.checkout.update({
+      where: {
+        id,
+      },
+      data: {
+        ...payload,
+      },
+    });
   });
 }
