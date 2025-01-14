@@ -39,6 +39,23 @@ function getOrder(
   return orderBy as never;
 }
 
+async function getAllChildCategories(categoryId: number) {
+  const allCategories = await prismaClient.goodCategory.findMany();
+  const res = [categoryId];
+  let oldSize = res.length;
+
+  do {
+    oldSize = res.length;
+    for (const category of allCategories) {
+      if (category.parentId && res.includes(category.parentId) && !res.includes(category.id)) {
+        res.push(category.id);
+      }
+    }
+  } while (oldSize !== res.length);
+
+  return res;
+}
+
 export async function getGoods(
   offset: number,
   limit: number,
@@ -47,11 +64,17 @@ export async function getGoods(
   filter?: 'published',
   categoryId?: number
 ) {
+  const categoryFilter = categoryId
+    ? {
+        in: await getAllChildCategories(categoryId),
+      }
+    : undefined;
+
   return await prismaClient.good.findMany({
     skip: offset,
     take: limit,
     where: {
-      categoryId: categoryId,
+      categoryId: categoryFilter,
       status: filter,
       OR: search
         ? [
