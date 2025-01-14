@@ -2,6 +2,7 @@ import { Type } from '@sinclair/typebox';
 import { FastifySchema } from 'fastify';
 import {
   ErrorSchema,
+  GoodCategorySchema,
   GoodSchema,
   ResponseWithPagination,
   ResponseWithStatus,
@@ -58,6 +59,7 @@ export const GetGoodsListSchema: FastifySchema = {
   querystring: Type.Object({
     limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })),
     offset: Type.Optional(Type.Integer({ minimum: 0 })),
+    categoryId: Type.Optional(GoodCategorySchema.properties.id),
     search: Type.Optional(Type.String()),
     sort: Type.Optional(Type.String({ enum: ['date', 'date_ask', 'count', 'count_ask', 'price', 'price_ask'] })),
   }),

@@ -44,12 +44,14 @@ export async function getGoods(
   limit: number,
   sort: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft' = 'date',
   search?: string,
-  filter?: 'published'
+  filter?: 'published',
+  categoryId?: number
 ) {
   return await prismaClient.good.findMany({
     skip: offset,
     take: limit,
     where: {
+      categoryId: categoryId,
       status: filter,
       OR: search
         ? [
@@ -80,9 +82,10 @@ export async function getGoods(
   });
 }
 
-export async function getTotalGoods(search?: string, filter?: 'published') {
+export async function getTotalGoods(search?: string, filter?: 'published', categoryId?: number) {
   return prismaClient.good.count({
     where: {
+      categoryId,
       status: filter,
       OR: search
         ? [

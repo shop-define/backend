@@ -64,6 +64,7 @@ export async function getGoodGroupPrivate(req: FastifyRequest<{ Params: { id: st
 interface GoodsListQuery {
   offset?: number;
   limit?: number;
+  categoryId?: number;
   search?: string;
   sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft';
 }
@@ -73,10 +74,10 @@ async function getGoodsList(
   reply: FastifyReply,
   filter?: 'published'
 ) {
-  const { offset = 0, limit = 10, search, sort } = req.query;
+  const { offset = 0, limit = 10, search, sort, categoryId } = req.query;
 
-  const goodsList = await getGoods(offset, limit, sort, search, filter);
-  const goodsTotal = await getTotalGoods(search, filter);
+  const goodsList = await getGoods(offset, limit, sort, search, filter, categoryId);
+  const goodsTotal = await getTotalGoods(search, filter, categoryId);
 
   if (!goodsList) {
     throw new BackendError('Goods not found', 404);
@@ -90,6 +91,7 @@ export function getGoodsListPublic(
     Querystring: {
       offset?: number;
       limit?: number;
+      categoryId?: number;
       search?: string;
       sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price';
     };
@@ -104,6 +106,7 @@ export function getGoodsListPrivate(
     Querystring: {
       offset?: number;
       limit?: number;
+      categoryId?: number;
       search?: string;
       sort?: 'date_ask' | 'date' | 'count_ask' | 'count' | 'price_ask' | 'price' | 'published' | 'draft';
     };
